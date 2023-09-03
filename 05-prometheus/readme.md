@@ -8,11 +8,9 @@
     docker-compose up -d
     ```
 
-2. 開啟瀏覽器，輸入 `http://localhost:3000`，登入帳號密碼為 `admin/admin`
-3. 點擊左上 Menu > Dashboards > Grafana Stats，即可看到透過 Provisioning 建立的 Dashboard
+2. 開啟瀏覽器，輸入 `http://localhost:9090` 開啟 Prometheus UI
 
 ## Goals
 
-1. 建立 Grafana，並將資料 Mount 至本機，確保資料不會因 Container 關閉而遺失
-2. 使用 Provisioning 的方式建立 Data Source、Dashboard
-3. 視覺化呈現 Prometheus Data Source 的資料於 Dashboard
+1. 建立 Prometheus，並根據 etc/prometheus/prometheus.yml 設定檔，從 FastAPI App 與 Spring Boot App 爬取 Metrics
+2. 檢視 Prometheus UI 的 Targets，確認兩個 App 的 Metrics 都有被爬取
