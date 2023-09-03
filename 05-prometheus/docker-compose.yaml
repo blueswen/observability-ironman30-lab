@@ -1,0 +1,24 @@
+version: "3.7"
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+
+  fastapi:
+    build: ./app_fastapi/
+    ports:
+      - "8000:8000"
+    command: "python main.py"
+
+  spring-boot:
+    build: ./app_springboot/
+    ports:
+      - "8080:8080"
+    command: "java -jar /app.jar"
