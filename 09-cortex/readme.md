@@ -26,8 +26,9 @@
 
 ## Goals
 
-1. 建立 Cortex，供 Grafana 使用
+1. 建立 Cortex，供 Grafana 查詢與 Prometheus 寫入
    1. Single Instance: 使用 docker-compose.yml
    2. Multi Instances: 使用 docker-compose.multi.yml
+      1. Multi Instances 需要額外的 Key-Value Store 同步多個 Cortex，這邊使用 [Consul](https://developer.hashicorp.com/consul)
 2. 建立 Prometheus 透過 remote write 的方式將資料寫入 Cortex
 3. Grafana 使用 Cortex 當作 Metrics Data Source

@@ -13,6 +13,6 @@
 
 ## Goals
 
-1. 建立 Mimir，供 Grafana 使用
+1. 建立 Mimir，供 Grafana 查詢與 Prometheus 寫入
 2. 建立 Prometheus 透過 remote write 的方式將資料寫入 Mimir
 3. Grafana 使用 Mimir 當作 Metrics Data Source
