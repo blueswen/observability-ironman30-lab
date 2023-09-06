@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./etc/grafana/data:/var/lib/grafana
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+
+  cortex-1:
+    image: cortexproject/cortex:v1.15.3
+    ports:
+      - 9009:9009
+    volumes:
+      - ./etc/cortex/single-process-config-blocks-local.yaml:/etc/single-process-config-blocks-local.yaml
+    command:
+      - -config.file=/etc/single-process-config-blocks-local.yaml
