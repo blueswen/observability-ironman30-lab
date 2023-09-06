@@ -1,0 +1,112 @@
+version: "3.7"
+
+services:
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./etc/grafana/data:/var/lib/grafana
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus_remote_write.yml
+
+  thanos_receiver:
+    image: quay.io/thanos/thanos:v0.32.2
+    volumes:
+      - ./etc/thanos/objstore_data:/objstore_data
+      - ./etc/thanos/recieve:/tsdb_data
+    command:
+      - receive
+      - --tsdb.path=/tsdb_data
+      - --grpc-address=0.0.0.0:10901
+      - --http-address=0.0.0.0:10902
+      - --receive.replication-factor=1
+      - --label=receive_replica="0"
+      - --receive.local-endpoint=127.0.0.1:10901
+      - |
+        --receive.hashrings=[
+            {
+              "endpoints": [
+                  "127.0.0.1:10901"
+              ]
+          }
+        ]
+      - --remote-write.address=0.0.0.0:19291
+      - |
+        --objstore.config=type: FILESYSTEM
+        config: 
+            directory: /objstore_data
+    expose:
+      - 10901
+      - 10902
+
+  thanos_querier:
+    image: quay.io/thanos/thanos:v0.32.2
+    command:
+      - query
+      - --http-address=0.0.0.0:19192
+      - --endpoint=thanos_receiver:10901
+      - --endpoint=thanos_store:19090
+    expose:
+      - 19192
+    ports:
+      - 19192:19192
+
+  thanos_store:
+    image: quay.io/thanos/thanos:v0.32.2
+    volumes:
+      - ./etc/thanos/objstore_data:/objstore_data
+      - ./etc/thanos/store:/data
+    command:
+      - store
+      - |
+        --objstore.config=type: FILESYSTEM
+        config: 
+            directory: /objstore_data
+      - --http-address=0.0.0.0:19191
+      - --grpc-address=0.0.0.0:19090
+      - --data-dir=/data # Local data directory used for caching purposes (index-header, in-mem cache items and meta.jsons).
+    restart: unless-stopped
+    expose:
+      - 19191
+      - 19090
+
+  thanos_compactor:
+    image: quay.io/thanos/thanos:v0.32.2
+    volumes:
+      - ./etc/thanos/objstore_data:/objstore_data
+      - ./etc/thanos/compactor:/data
+    command:
+      - compact
+      - |
+        --objstore.config=type: FILESYSTEM
+        config: 
+            directory: /objstore_data
+      - --http-address=0.0.0.0:10902
+      - --wait
+      - --data-dir=/data # Data directory in which to cache blocks and process compactions.
+    expose:
+      - 10902
+
+  thanos_query_frontend:
+    image: quay.io/thanos/thanos:v0.32.2
+    command:
+      - query-frontend
+      - --http-address=0.0.0.0:9090
+      - --query-frontend.downstream-url=http://thanos_querier:19192
+    ports:
+      - 9091:9090
+    depends_on:
+      - thanos_querier
