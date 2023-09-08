@@ -9,6 +9,11 @@
     ```
 
 2. 開啟瀏覽器，輸入 `http://localhost:9090` 開啟 Prometheus UI
+3. 關閉所有服務
+
+    ```bash
+    docker-compose down
+    ```
 
 ## Goals
 
