@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/data:/var/lib/grafana
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+
+  statsd-exporter:
+    image: prom/statsd-exporter:v0.24.0
+    ports:
+      - "9125:9125"
+      - "9102:9102"
+
+  flask:
+    build: ./flask_datadog/
+    environment:
+      - STATSD_HOST=statsd-exporter
+      - STATSD_PORT=9125
+    ports:
+      - "8000:8000"
+    depends_on:
+      - statsd-exporter

@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+
+  graphite-statsd:
+    image: graphiteapp/graphite-statsd:1.1.10-5
+    ports:
+      - 80:80
+      - 8080:8080
+      - 8125:8125/udp
+      - 8126:8126
+
+  flask:
+    build: ./flask_pystatsd/
+    environment:
+      - STATSD_HOST=graphite-statsd
+      - STATSD_PORT=8125
+    ports:
+      - "8000:8000"
+    depends_on:
+      - graphite-statsd
