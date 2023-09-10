@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+
+  nginx:
+    image: nginxdemos/hello:0.3
+    container_name: nginx
+    ports:
+      - "8080:80"
+    labels:
+      - logging=promtail
+
+  promtail:
+    image:  grafana/promtail:2.9.0
+    container_name: promtail
+    volumes:
+      - ./etc/promtail.yaml:/etc/promtail/docker-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - logging=promtail
+    command: -config.file=/etc/promtail/docker-config.yaml
+    
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    labels:
+      - logging=promtail
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    labels:
+      - logging=promtail
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
