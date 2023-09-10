@@ -1,0 +1,108 @@
+version: "3.4"
+
+services:
+  
+  app-a:
+    build: ./fastapi_app_plain/
+    container_name: app-a
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "app-a"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger-collector:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-a"
+    command: "opentelemetry-instrument python main.py"
+
+  app-b:
+    build: ./fastapi_app_plain/
+    container_name: app-b
+    ports:
+      - "8001:8000"
+    environment:
+      APP_NAME: "app-b"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: http/protobuf
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger-collector:4318"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-b"
+    command: "opentelemetry-instrument python main.py"
+
+  app-c:
+    build: ./fastapi_app_plain/
+    container_name: app-c
+    ports:
+      - "8002:8000"
+    environment:
+      APP_NAME: "app-c"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "jaeger_proto"
+      OTEL_EXPORTER_JAEGER_ENDPOINT: "jaeger-collector:14250"
+      OTEL_EXPORTER_JAEGER_GRPC_INSECURE: "true"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-c"
+    command: "opentelemetry-instrument python main.py"
+
+  app-d:
+    build: ./fastapi_app_plain/
+    container_name: app-d
+    ports:
+      - "8003:8000"
+    environment:
+      APP_NAME: "app-d"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "jaeger_thrift"
+      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger-collector:14268/api/traces"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-d"
+    command: "opentelemetry-instrument python main.py"
+
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector:1.49.0
+    container_name: jaeger-collector
+    command: 
+      - "--cassandra.keyspace=jaeger_v1_dc1"
+      - "--cassandra.servers=cassandra"
+      - "--collector.otlp.enabled=true"
+    ports:
+      - "4317" # accept OpenTelemetry Protocol (OTLP) over gRPC
+      - "4318" # accept OpenTelemetry Protocol (OTLP) over HTTP
+      - "14268" # accept jaeger.thrift
+      - "14250" # accept model.proto
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
+
+  cassandra:
+    image: cassandra:4.1.2
+    container_name: cassandra
+
+  cassandra-schema:
+    image: jaegertracing/jaeger-cassandra-schema:1.49.0
+    container_name: cassandra-schema
+    depends_on:
+      - cassandra
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query:1.49.0
+    container_name: jaeger-query
+    command:
+      - "--cassandra.keyspace=jaeger_v1_dc1"
+      - "--cassandra.servers=cassandra"
+    ports:
+      - "16686:16686"
+      - "16687:16687"
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
