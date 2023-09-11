@@ -7,7 +7,6 @@ from typing import Optional
 import httpx
 import uvicorn
 from fastapi import FastAPI, Response
-from opentelemetry.propagate import inject
 from utils import PrometheusMiddleware, metrics
 
 APP_NAME = os.environ.get("APP_NAME", "app")
@@ -83,16 +82,13 @@ async def error_test(response: Response):
 @app.get("/chain")
 async def chain(response: Response):
 
-    headers = {}
-    inject(headers)  # inject trace info to header
-    logging.critical(headers)
-
+    logging.info("Chain Started")
     async with httpx.AsyncClient() as client:
-        await client.get("http://localhost:8000/", headers=headers,)
+        await client.get("http://localhost:8000/")
     async with httpx.AsyncClient() as client:
-        await client.get(f"http://{TARGET_ONE_HOST}:8000/io_task", headers=headers,)
+        await client.get(f"http://{TARGET_ONE_HOST}:8000/io_task")
     async with httpx.AsyncClient() as client:
-        await client.get(f"http://{TARGET_TWO_HOST}:8000/cpu_task", headers=headers,)
+        await client.get(f"http://{TARGET_TWO_HOST}:8000/cpu_task")
     logging.info("Chain Finished")
     return {"path": "/chain"}
 
