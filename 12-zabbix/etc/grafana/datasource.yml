@@ -1,0 +1,24 @@
+# config file version
+apiVersion: 1
+
+# list of datasources that should be deleted from the database
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+
+# list of datasources to insert/update depending
+# what's available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+  - uid: zabbix
+    orgId: 1
+    name: Zabbix
+    type: alexanderzobnin-zabbix-datasource
+    typeName: Zabbix
+    access: proxy
+    url: "http://zabbix-web-nginx-mysql:8080/api_jsonrpc.php"
+    isDefault: true
+    jsonData:
+      authType: "userLogin"
+      username: "Admin"
+      password: "zabbix"
