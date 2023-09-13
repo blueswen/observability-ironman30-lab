@@ -1,0 +1,52 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-pipeline-stages: |
+      - multiline:
+          firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
+          max_wait_time: 3s
+      - regex:
+          expression: '^(?P<time>\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2},d{3}) (?P<message>(?s:.*))$$'
+
+version: "3.7"
+
+services:
+
+  fastapi:
+    build: ./fastapi_app_plain/
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  nginx:
+    image: nginxdemos/hello:0.3
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - loki
+    logging: *default-logging
+    
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    labels:
+      - logging=promtail
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+    depends_on:
+      - loki
+    logging: *default-logging
