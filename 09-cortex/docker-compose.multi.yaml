@@ -4,6 +4,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.1.0
+    container_name: grafana
     ports:
       - 3000:3000
     volumes:
@@ -15,6 +16,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.46.0
+    container_name: prometheus
     ports:
       - 9090:9090
     volumes:
@@ -24,11 +26,13 @@ services:
 
   consul:
     image: hashicorp/consul:1.16.1
+    container_name: consul
     ports:
       - 8500:8500
 
   cortex-1:
     image: cortexproject/cortex:v1.15.3
+    container_name: cortex-1
     ports:
       - 9009:9009
     volumes:
@@ -40,6 +44,7 @@ services:
 
   cortex-2:
     image: cortexproject/cortex:v1.15.3
+    container_name: cortex-2
     ports:
       - 9010:9009
     volumes:
@@ -51,6 +56,7 @@ services:
 
   cortex-3:
     image: cortexproject/cortex:v1.15.3
+    container_name: cortex-3
     ports:
       - 9011:9009
     volumes:

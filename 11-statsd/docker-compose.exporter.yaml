@@ -4,6 +4,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.1.0
+    container_name: grafana
     ports:
       - 3000:3000
     volumes:
@@ -14,6 +15,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.46.0
+    container_name: prometheus
     ports:
       - 9090:9090
     volumes:
@@ -23,12 +25,14 @@ services:
 
   statsd-exporter:
     image: prom/statsd-exporter:v0.24.0
+    container_name: statsd-exporter
     ports:
       - "9125:9125"
       - "9102:9102"
 
   flask:
     build: ./flask_datadog/
+    container_name: flask
     environment:
       - STATSD_HOST=statsd-exporter
       - STATSD_PORT=9125

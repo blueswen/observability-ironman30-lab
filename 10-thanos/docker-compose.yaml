@@ -4,6 +4,7 @@ services:
 
   grafana:
     image: grafana/grafana:10.1.0
+    container_name: grafana
     ports:
       - 3000:3000
     volumes:
@@ -15,6 +16,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.46.0
+    container_name: prometheus
     ports:
       - 9090:9090
     volumes:
@@ -28,6 +30,7 @@ services:
 
   thanos_sidecar:
     image: quay.io/thanos/thanos:v0.32.2
+    container_name: thanos_sidecar
     volumes:
       - ./etc/prometheus/data:/tsdb_data
       - ./etc/thanos/objstore_data:/objstore_data
@@ -47,6 +50,7 @@ services:
 
   thanos_querier:
     image: quay.io/thanos/thanos:v0.32.2
+    container_name: thanos_querier
     command:
       - query
       - --http-address=0.0.0.0:19192
@@ -59,6 +63,7 @@ services:
 
   thanos_store:
     image: quay.io/thanos/thanos:v0.32.2
+    container_name: thanos_store
     volumes:
       - ./etc/thanos/objstore_data:/objstore_data
       - ./etc/thanos/store:/data
@@ -78,6 +83,7 @@ services:
 
   thanos_compactor:
     image: quay.io/thanos/thanos:v0.32.2
+    container_name: thanos_compactor
     volumes:
       - ./etc/thanos/objstore_data:/objstore_data
       - ./etc/thanos/compactor:/data
@@ -95,6 +101,7 @@ services:
 
   thanos_query_frontend:
     image: quay.io/thanos/thanos:v0.32.2
+    container_name: thanos_query_frontend
     command:
       - query-frontend
       - --http-address=0.0.0.0:9090

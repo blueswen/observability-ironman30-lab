@@ -4,6 +4,7 @@ services:
 
   graphite-statsd:
     image: graphiteapp/graphite-statsd:1.1.10-5
+    container_name: graphite-statsd
     ports:
       - 80:80
       - 8080:8080
@@ -12,6 +13,7 @@ services:
 
   flask:
     build: ./flask_pystatsd/
+    container_name: flask
     environment:
       - STATSD_HOST=graphite-statsd
       - STATSD_PORT=8125

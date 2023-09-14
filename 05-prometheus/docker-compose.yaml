@@ -4,6 +4,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.46.0
+    container_name: prometheus
     ports:
       - 9090:9090
     volumes:
@@ -13,12 +14,14 @@ services:
 
   fastapi:
     build: ./app_fastapi/
+    container_name: fastapi
     ports:
       - "8000:8000"
     command: "python main.py"
 
   spring-boot:
     build: ./app_springboot/
+    container_name: spring-boot
     ports:
       - "8080:8080"
     command: "java -jar /app.jar"
