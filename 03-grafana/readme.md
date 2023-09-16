@@ -26,7 +26,7 @@
 
 ## Tasks
 
-<details><summary>1. 匯入 Dashboard <a href="https://grafana.com/grafana/dashboards/3662-prometheus-2-0-overview/">Prometheus 2.0 Overview</a></summary>
+<details><summary>Task 1: 匯入 Dashboard <a href="https://grafana.com/grafana/dashboards/3662-prometheus-2-0-overview/">Prometheus 2.0 Overview</a></summary>
 
 1. 點擊左上 Menu > Dashboards 點擊右上區域的 New，選擇 Import
 2. 使用 `Import via grafana.com` 的方式匯入 Dashboard，Dashboard ID 為 `3662`，點擊 Load
@@ -35,7 +35,7 @@
 
 </details>
 
-<details><summary>2. 瀏覽目前的 Data Source 設定以及查詢內容</summary>
+<details><summary>Task 2: 瀏覽目前的 Data Source 設定以及查詢內容</summary>
 
 1. 點擊左上 Menu > Configuration > Data Sources，可以看到目前的 Data Source 設定
 2. 點擊左上 Menu > Explore，可以透過左上的下拉選單選擇 Data Source，下方的查詢區塊會自動帶入該 Data Source 的查詢語法
