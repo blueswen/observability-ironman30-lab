@@ -23,9 +23,6 @@ datasources:
     basicAuth: false
     isDefault: true
     jsonData:
-      exemplarTraceIdDestinations:
-        - datasourceUid: tempo
-          name: trace_id
       httpMethod: POST
     readOnly: false
     editable: true
