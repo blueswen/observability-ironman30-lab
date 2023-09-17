@@ -9,7 +9,7 @@
     ```
 
 2. 檢視服務
-   1. Grafana: `http://localhost:3000`，登入帳號密碼為 `admin/admin`
+   1. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
       1. 點擊左上 Menu > Dashboards > Grafana Stats，即可看到透過 Provisioning 建立的 Dashboard
 3. 關閉所有服務
 
@@ -23,6 +23,7 @@
    1. 將資料 Mount 至本機，確保資料不會因 Container 關閉而遺失
    2. 使用 Provisioning 的方式建立 Data Source、Dashboard
    3. 視覺化呈現 Prometheus Data Source 的資料於 Dashboard
+   4. 透過 `grafan.ini` 啟用 metrics，以 Prometheus Metrics 的提供方式提供 Grafana Metrics（[http://localhost:3000/metrics](http://localhost:3000/metrics)）
 
 ## Tasks
 
@@ -41,3 +42,7 @@
 2. 點擊左上 Menu > Explore，可以透過左上的下拉選單選擇 Data Source，下方的查詢區塊會自動帶入該 Data Source 的查詢語法
 
 </details>
+
+## 參考資料
+
+1. [Grafana Internals](https://grafana.com/grafana/dashboards/3590-grafana-internals/)
