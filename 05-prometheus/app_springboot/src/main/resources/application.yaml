@@ -6,3 +6,8 @@ management:
   metrics:
     tags:
       application: spring-boot-demo-app
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: 'true'
