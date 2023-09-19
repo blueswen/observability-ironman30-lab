@@ -43,7 +43,7 @@
 
 ## Goals
 
-1. 建立 Prometheus，並根據 etc/prometheus/prometheus.yml 設定檔，從 FastAPI App 與 Spring Boot App 爬取 Metrics
+1. 建立 Prometheus，並根據 `etc/prometheus/prometheus.yml` 設定檔，從 FastAPI App 與 Spring Boot App 爬取 Metrics
 2. 檢視 Prometheus UI 的 Targets，確認兩個 App 的 Metrics 都有被爬取
 
 ## Tasks
