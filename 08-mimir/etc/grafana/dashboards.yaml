@@ -1,6 +1,6 @@
 apiVersion: 1
 providers:
-- name: 'Grafana Stats'
+- name: 'default dashboards'
   orgId: 1
   folder: ''
   type: 'file'
