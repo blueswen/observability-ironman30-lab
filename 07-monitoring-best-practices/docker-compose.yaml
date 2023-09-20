@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+
+  fastapi:
+    build: ./app_fastapi/
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    command: "python main.py"
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
