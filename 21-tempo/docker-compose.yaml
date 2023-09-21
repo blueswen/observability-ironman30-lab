@@ -1,0 +1,84 @@
+version: "3.4"
+
+services:
+  
+  app-a:
+    build: ./fastapi_app_plain/
+    container_name: app-a
+    ports:
+      - "8000:8000"
+    environment:
+      APP_NAME: "app-a"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-a"
+    command: "opentelemetry-instrument python main.py"
+
+  app-b:
+    build: ./fastapi_app_plain/
+    container_name: app-b
+    ports:
+      - "8001:8000"
+    environment:
+      APP_NAME: "app-b"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-b"
+    command: "opentelemetry-instrument python main.py"
+
+  app-c:
+    build: ./fastapi_app_plain/
+    container_name: app-c
+    ports:
+      - "8002:8000"
+    environment:
+      APP_NAME: "app-c"
+      TARGET_ONE_HOST: "app-b"
+      TARGET_TWO_HOST: "app-c"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_TRACES_EXPORTER: "otlp"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-c"
+    command: "opentelemetry-instrument python main.py"
+
+  tempo:
+    image: grafana/tempo:2.2.3
+    container_name: tempo
+    volumes:
+      - ./etc/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+    command: 
+      - "--target=all"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo"
+      - "--auth.enabled=false"
+      - "--config.file=/etc/tempo/tempo.yaml"
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    command:
+      - "--enable-feature=remote-write-receiver"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus/:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: "tempoServiceGraph"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources

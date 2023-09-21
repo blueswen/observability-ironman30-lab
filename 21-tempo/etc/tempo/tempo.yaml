@@ -1,0 +1,10 @@
+metrics_generator:
+    storage:
+      path: "/tmp/metrics"
+      remote_write:
+        - url: "http://prometheus:9090/api/v1/write"
+overrides:
+  metrics_generator_processors:
+    - service-graphs
+    - span-metrics
+  
