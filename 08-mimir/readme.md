@@ -1,5 +1,7 @@
 # Mimir
 
+此範例僅建立單一 Mimir，並將資料儲存於 Local Disk 中，若要建立多實體的 Mimir 並搭配 [MinIO](https://min.io/) 的版本，可以參考官方提供的範例 [Play with Mimir](https://grafana.com/tutorials/play-with-grafana-mimir/)。
+
 ## Quick Start
 
 1. 啟動所有服務
