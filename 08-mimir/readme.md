@@ -9,11 +9,11 @@
     ```
 
 2. 檢視服務
-   1. Grafana: `http://localhost:3000`，登入帳號密碼為 `admin/admin`
-      1. 點擊左上 Menu > Dashboards，即可看到透過 Provisioning 建立的 Dashboard(Grafana Stats、Mimir / Overview)
-   2. Prometheus: `http://localhost:9090`
-   3. Mimir: `http://localhost:9009`
+   1. Prometheus: [http://localhost:9090](http://localhost:9090)
+   2. Mimir: [http://localhost:9009](http://localhost:9009)
       1. 可檢視 Mimir 各 Component 的狀態
+   3. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
+      1. 點擊左上 Menu > Dashboards，即可看到透過 Provisioning 建立的 Dashboard(Grafana Stats、Mimir / Overview)
 3. 關閉所有服務
 
     ```bash
