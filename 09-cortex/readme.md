@@ -46,3 +46,7 @@
       1. Multi Instances 需要額外的 Key-Value Store 同步多個 Cortex，這裡使用 [Consul](https://developer.hashicorp.com/consul)
 2. 建立 Prometheus 透過 remote write 的方式將資料寫入 Cortex
 3. Grafana 使用 Cortex 當作 Prometheus Data Source
+
+## 參考資料
+
+1. [Cortex Documentation: Getting Started](https://cortexmetrics.io/docs/getting-started/)

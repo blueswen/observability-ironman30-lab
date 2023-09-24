@@ -9,7 +9,6 @@ services:
       - 3000:3000
     volumes:
       - ./etc/grafana/grafana.ini:/etc/grafana/grafana.ini
-      - ./etc/grafana/data:/var/lib/grafana
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
       - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./etc/grafana/dashboards:/etc/grafana/dashboards
