@@ -11,10 +11,10 @@ class StatsdMiddleware:
     def __init__(self, application, app_name):
         self.__application = application
         self.__app_name = app_name
-        self.statsd_client = statsd.StatsClient(os.getenv("STATSD_HOST", "statsd-exporter"), os.getenv("STATSD_PORT", "9125"))
+        self.statsd_client = statsd.StatsClient(os.getenv("STATSD_HOST", "graphite-statsd"), os.getenv("STATSD_PORT", "8125"))
 
-        # send service info with tags
-        self.statsd_client.gauge(f"flask.info.{self.__app_name}", 1)
+        # send service info with gauge
+        self.statsd_client.gauge(f"flask.name.{self.__app_name}", 1)
 
     def __call__(self, environ, start_response):
         patch_info = {
@@ -25,7 +25,7 @@ class StatsdMiddleware:
         }
 
         def _start_response(status, headers, *args, **kwargs):
-            # log http status code when each response start
+            # count request by method and endpoint
             kwargs.get("statsd_client").incr(
                 f"flask.request_total.${kwargs.get('method', '')}.${kwargs.get('endpoint', '')}".lower(), 1
             )

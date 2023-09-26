@@ -8,7 +8,6 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./etc/grafana/data:/var/lib/grafana
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
       - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./etc/grafana/dashboards:/etc/grafana/dashboards
@@ -30,7 +29,7 @@ services:
       - "9125:9125"
       - "9102:9102"
 
-  flask:
+  flask-datadog:
     build: ./flask_datadog/
     container_name: flask
     environment:

@@ -29,3 +29,17 @@ datasources:
       httpMethod: POST
     readOnly: false
     editable: true
+  - uid: graphite
+    orgId: 1
+    name: Graphite
+    type: graphite
+    typeName: Graphite
+    access: proxy
+    url: http://graphite-statsd:8080
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: false
+    readOnly: false
+    editable: true

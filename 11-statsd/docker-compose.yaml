@@ -2,6 +2,16 @@ version: "3.7"
 
 services:
 
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards
+
   graphite-statsd:
     image: graphiteapp/graphite-statsd:1.1.10-5
     container_name: graphite-statsd
@@ -11,7 +21,7 @@ services:
       - 8125:8125/udp
       - 8126:8126
 
-  flask:
+  flask-pystatsd:
     build: ./flask_pystatsd/
     container_name: flask
     environment:
