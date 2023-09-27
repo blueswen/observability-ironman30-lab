@@ -22,3 +22,4 @@ datasources:
       authType: "userLogin"
       username: "Admin"
       password: "zabbix"
+    editable: true

@@ -20,6 +20,7 @@ services:
   zabbix-server-mysql:
     build: ./zabbix-server/
     container_name: zabbix-server-mysql
+    hostname: "Zabbix server"
     environment:
       DB_SERVER_HOST: "mysql-server"
       MYSQL_DATABASE: "zabbix"
@@ -60,6 +61,8 @@ services:
     container_name: grafana
     volumes:
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards
     ports:
       - "3000:3000"
 
