@@ -88,7 +88,7 @@
 7. 設定 Step 的基礎設定，如圖設定 Name、URL、Required status codes，其他預設即可
    ![Step setting](./images/12-08-web-scenario-root.png)
 
-8. 可在新增其他 Step，如圖所示，新增完點擊 Add 或 Update 儲存
+8. 可再新增其他 Step，如圖所示，新增完點擊 Add 或 Update 儲存
    ![Step setting](./images/12-09-web-scenario-all-step.png)
 
 9. 設定完成後稍待一下，可於 Monitoring 選單的 Hosts 頁籤中至 fastapi 的 Latest data 查看執行 Web Scenario 所收集的數據
