@@ -1,4 +1,4 @@
-# Promtail
+# Loki
 
 ## Quick Start
 
@@ -29,6 +29,12 @@
    3. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
       1. 點擊左上 Menu > Explore，左上 Data Source 選擇 `Loki`，在 Label Filter 中 Label 選擇 `compose_service`，Value 選擇 `fastapi`，即可看到 fastapi Container 的 Log
       2. 瀏覽 `http://localhost:8000/error_test`，產生 Stack Trace 測試輸出多行 Log 後，查看 Grafana Explore 中的 fastapi Log 是否有收集到新的 Log 以及是否有正確合併多行 Log
+      3. 若要生成更多 Log 也可以使用 [k6](https://k6.io/) 發送更多 Request
+
+            ```bash
+            k6 run --vus 1 --duration 300s k6-script.js
+            ```
+      
 4. 關閉所有服務
 
     ```bash
@@ -53,7 +59,7 @@
 1. 在 `docker-compose.yml` 中使用了 [YAML anchor and alias](https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/)，將 Loki Docker Driver 的設定抽出來，並在每個服務中使用 alias(*) 來引用
 2. [Loki Docker Driver options](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/) 設定
    1. loki-url: Loki 服務的 Endpoint
-   2. loki-pipeline-stages: 使用 multiline 和 regex stages 處理 FastAPI App 的多行 Log ([參考](https://grafana.com/docs/loki/latest/clients/promtail/stages/multiline/))
+   2. loki-pipeline-stages: 使用 multiline 和 regex stages 處理 FastAPI App 的多行 Log ([參考](https://grafana.com/docs/loki/latest/send-data/promtail/stages/multiline/))
 
 ```yaml
 x-logging: &default-logging # anchor(&): 'default-logging' 作為這個片段的名稱
