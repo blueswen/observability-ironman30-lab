@@ -39,6 +39,8 @@ services:
       - 9090:9090
     volumes:
       - ./etc/prometheus:/workspace
+    labels:
+      - logging=promtail
     command:
       - --config.file=/workspace/prometheus.yml
 
