@@ -13,6 +13,8 @@ services:
   promtail:
     image:  grafana/promtail:2.9.0
     container_name: promtail
+    ports:
+      - "9080:9080"
     volumes:
       - ./etc/promtail.yaml:/etc/promtail/docker-config.yaml
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
@@ -29,6 +31,16 @@ services:
     labels:
       - logging=promtail
     command: -config.file=/etc/loki/local-config.yaml
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
 
   grafana:
     image: grafana/grafana:10.1.0

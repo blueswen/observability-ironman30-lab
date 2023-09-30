@@ -18,4 +18,10 @@ datasources:
     access: proxy
     url: http://loki:3100
     isDefault: true
-    
+  - uid: prometheus
+    orgId: 1
+    name: Prometheus
+    type: prometheus
+    typeName: Prometheus
+    access: proxy
+    url: http://prometheus:9090
