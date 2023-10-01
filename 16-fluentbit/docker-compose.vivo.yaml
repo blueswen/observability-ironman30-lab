@@ -1,0 +1,40 @@
+x-logging: &default-logging
+  driver: fluentd
+  options:
+    fluentd-address: localhost:24224
+    labels: "app"
+
+version: "3.7"
+
+services:
+
+  nginx:
+    image: nginxdemos/hello:0.3
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - fluent-bit
+    labels:
+      - app=nginx
+    logging: *default-logging
+
+  fluent-bit:
+    image: fluent/fluent-bit:2.1.10
+    container_name: fluent-bit
+    ports:
+      - "2021:2021"
+      - "24224:24224"
+    volumes:
+      - ./etc/fluent-bit/vivo.conf:/fluent-bit/etc/fluent-bit.conf
+    depends_on:
+      - vivo
+
+  vivo:
+    image: calyptia/vivo:3.1.0
+    container_name: vivo
+    ports:
+      - "2025:2025"
+      - "8000:3000"
+      - "9000:24224"
+      - "9010:9080"

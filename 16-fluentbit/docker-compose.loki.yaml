@@ -1,0 +1,69 @@
+x-logging: &default-logging
+  driver: fluentd
+  options:
+    fluentd-address: localhost:24224
+    labels: "app"
+
+version: "3.7"
+
+services:
+
+  nginx:
+    image: nginxdemos/hello:0.3
+    container_name: nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - fluent-bit
+    labels:
+      - app=nginx
+    logging: *default-logging
+
+  fluent-bit:
+    image: fluent/fluent-bit:2.1.10
+    container_name: fluent-bit
+    ports:
+      - "2021:2021"
+      - "24224:24224"
+    volumes:
+      - ./etc/fluent-bit/loki.conf:/fluent-bit/etc/fluent-bit.conf
+    
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    depends_on:
+      - fluent-bit
+    labels:
+      - app=loki
+    logging: *default-logging
+
+  prometheus:
+    image: prom/prometheus:v2.46.0
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./etc/prometheus:/workspace
+    command:
+      - --config.file=/workspace/prometheus.yml
+    depends_on:
+      - fluent-bit
+    labels:
+      - app=prometheus
+    logging: *default-logging
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+    depends_on:
+      - fluent-bit
+    labels:
+      - app=grafana
+    logging: *default-logging
