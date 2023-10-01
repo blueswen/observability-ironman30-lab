@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+
+  vector:
+    image: timberio/vector:0.33.0-alpine
+    container_name: vector
+    command: --config /etc/vector/vector.yaml
+    volumes:
+      - ./etc/vector/vector.yaml:/etc/vector/vector.yaml

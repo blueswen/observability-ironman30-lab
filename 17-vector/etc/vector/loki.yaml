@@ -1,0 +1,21 @@
+sources:
+  container_logs:
+    type: docker_logs
+    include_labels:
+      - "logger=vector"
+
+sinks:
+  loki:
+    type: loki
+    inputs:
+      - container_logs
+    endpoint: http://loki:3100
+    encoding:
+      codec: json
+      except_fields:
+        - container_created_at
+        - container_id
+        - label
+    labels:
+      container_name: "{{ .container_name }}"
+    healthcheck: false

@@ -1,0 +1,40 @@
+version: "3.7"
+
+services:
+
+  nginx:
+    image: nginxdemos/hello:0.3
+    container_name: nginx
+    ports:
+      - "8080:80"
+    labels:
+      - logger=vector
+
+  vector:
+    image: timberio/vector:0.33.0-alpine
+    container_name: vector
+    command: --config /etc/vector/vector.yaml
+    volumes:
+      - ./etc/vector/loki.yaml:/etc/vector/vector.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - loki
+    
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    labels:
+      - logger=vector
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - 3000:3000
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+    labels:
+      - logger=vector

@@ -1,0 +1,23 @@
+sources:
+  my_demo_logs:
+    type: demo_logs
+    format: json
+    decoding:
+      codec: json
+    lines:
+      - line1
+
+transforms:
+  my_demo_logs_get:
+    type: filter
+    condition: '.method == "GET"'
+    inputs:
+      - my_demo_logs
+
+sinks:
+  my_demo_stdout:
+    type: console
+    encoding:
+      codec: json
+    inputs:
+      - my_demo_logs_get
