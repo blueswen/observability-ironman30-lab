@@ -51,11 +51,6 @@
 
 ## Loki Docker Driver 補充說明
 
-1. Use [YAML anchor and alias](https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/) feature to set logging options for each service.
-2. Set [Loki Docker Driver options](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/)
-   1. loki-url: loki service endpoint
-   2. loki-pipeline-stages: processes multiline log from Spring Boot application with multiline and regex stages ([reference](https://grafana.com/docs/loki/latest/clients/promtail/stages/multiline/))
-
 1. 在 `docker-compose.yml` 中使用了 [YAML anchor and alias](https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/)，將 Loki Docker Driver 的設定抽出來，並在每個服務中使用 alias(*) 來引用
 2. [Loki Docker Driver options](https://grafana.com/docs/loki/latest/clients/docker-driver/configuration/) 設定
    1. loki-url: Loki 服務的 Endpoint
