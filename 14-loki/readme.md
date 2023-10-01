@@ -60,7 +60,7 @@
 x-logging: &default-logging # anchor(&): 'default-logging' 作為這個片段的名稱
   driver: loki
   options:
-    loki-url: 'http://localhost:3100/api/prom/push'
+    loki-url: 'http://localhost:3100/api/prom/push' # 使用 localhost 是因為 Logging Driver 不是 Container，所以不能使用 Container Name
     loki-pipeline-stages: |
       - multiline:
           firstline: '^\d{4}-\d{2}-\d{2} \d{1,2}:\d{2}:\d{2}'
