@@ -6,4 +6,3 @@ opentelemetry-instrumentation-fastapi==0.40b0
 opentelemetry-instrumentation-logging==0.40b0
 opentelemetry-instrumentation-httpx==0.40b0
 opentelemetry-exporter-otlp==1.19.0
-opentelemetry-exporter-jaeger==1.19.0

@@ -8,11 +8,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      APP_NAME: "app-a"
       TARGET_ONE_SVC: "app-b:8000"
       TARGET_TWO_SVC: "app-c:8080"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-a"
@@ -24,11 +22,9 @@ services:
     ports:
       - "8001:8000"
     environment:
-      APP_NAME: "app-b"
       TARGET_ONE_SVC: "app-a:8000"
       TARGET_TWO_SVC: "app-c:8080"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-b"
@@ -43,8 +39,8 @@ services:
       TARGET_ONE_SVC: "app-a:8000"
       TARGET_TWO_SVC: "app-b:8000"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
-      OTEL_SERVICE_NAME: "app-c"
       OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-c"
     command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
 
   tempo:

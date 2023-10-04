@@ -7,7 +7,6 @@ import httpx
 import uvicorn
 from fastapi import FastAPI, Response, Request
 
-APP_NAME = os.environ.get("APP_NAME", "app")
 EXPOSE_PORT = os.environ.get("EXPOSE_PORT", 8000)
 
 TARGET_ONE_SVC = os.environ.get("TARGET_ONE_SVC", "localhost:8000")
