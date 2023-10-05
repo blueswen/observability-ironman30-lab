@@ -21,7 +21,6 @@ datasources:
     user: ''
     database: ''
     basicAuth: false
-    isDefault: true
     jsonData:
       httpMethod: POST
     readOnly: false
@@ -33,6 +32,9 @@ datasources:
     typeName: Tempo
     access: proxy
     url: http://tempo
+    isDefault: true
+    readOnly: false
+    editable: true
     jsonData:
       httpMethod: GET
       serviceMap:

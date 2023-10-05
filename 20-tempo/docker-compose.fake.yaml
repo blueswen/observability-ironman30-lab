@@ -1,0 +1,45 @@
+version: "3.4"
+
+services:
+  
+  k6-tracing:
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.2
+    container_name: k6-tracing
+    environment:
+      - ENDPOINT=tempo:4317
+    restart: always
+    depends_on:
+      - tempo
+
+  tempo:
+    image: grafana/tempo:2.2.3
+    container_name: tempo
+    volumes:
+      - ./etc/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+    command: 
+      - "--target=all"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo"
+      - "--auth.enabled=false"
+      - "--config.file=/etc/tempo/tempo.yaml"
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    command:
+      - "--enable-feature=remote-write-receiver"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus/:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: "tempoServiceGraph"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
