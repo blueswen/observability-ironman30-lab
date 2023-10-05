@@ -3,52 +3,45 @@ version: "3.4"
 services:
   
   app-a:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-a
     ports:
       - "8000:8000"
     environment:
-      APP_NAME: "app-a"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-b:8000"
+      TARGET_TWO_SVC: "app-c:8080"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-a"
     command: "opentelemetry-instrument python main.py"
 
   app-b:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-b
     ports:
       - "8001:8000"
     environment:
-      APP_NAME: "app-b"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-a:8000"
+      TARGET_TWO_SVC: "app-c:8080"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-b"
     command: "opentelemetry-instrument python main.py"
 
   app-c:
-    build: ./fastapi_app_plain/
+    build: ./app_springboot/
     container_name: app-c
     ports:
-      - "8002:8000"
+      - "8002:8080"
     environment:
-      APP_NAME: "app-c"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
-      OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "otlp"
+      TARGET_ONE_SVC: "app-a:8000"
+      TARGET_TWO_SVC: "app-b:8000"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-c"
-    command: "opentelemetry-instrument python main.py"
+    command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
 
   tempo:
     image: grafana/tempo:2.2.3
