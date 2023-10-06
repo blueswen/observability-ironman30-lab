@@ -1,0 +1,22 @@
+# config file version
+apiVersion: 1
+
+# list of datasources that should be deleted from the database
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+
+# list of datasources to insert/update depending
+# what's available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+  - uid: jaeger
+    orgId: 1
+    name: Jaeger
+    type: jaeger
+    typeName: Jaeger
+    access: proxy
+    url: http://jaeger-query:16686
+    isDefault: true
+    readOnly: false
+    editable: true

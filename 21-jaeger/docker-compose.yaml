@@ -3,14 +3,13 @@ version: "3.4"
 services:
   
   app-a:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-a
     ports:
       - "8000:8000"
     environment:
-      APP_NAME: "app-a"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-b:8000"
+      TARGET_TWO_SVC: "app-c:8000"
       OTEL_PYTHON_LOG_CORRELATION: "true"
       OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://jaeger-collector:4317"
@@ -19,14 +18,13 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-b:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-b
     ports:
       - "8001:8000"
     environment:
-      APP_NAME: "app-b"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-c:8000"
+      TARGET_TWO_SVC: "app-d:8000"
       OTEL_PYTHON_LOG_CORRELATION: "true"
       OTEL_TRACES_EXPORTER: "otlp"
       OTEL_EXPORTER_OTLP_TRACES_PROTOCOL: http/protobuf
@@ -36,34 +34,32 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-c:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-c
     ports:
       - "8002:8000"
     environment:
-      APP_NAME: "app-c"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-c:8000"
+      TARGET_TWO_SVC: "app-d:8000"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "jaeger_proto"
-      OTEL_EXPORTER_JAEGER_ENDPOINT: "jaeger-collector:14250"
+      OTEL_TRACES_EXPORTER: "jaeger_thrift"
+      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger-collector:14268/api/traces"
       OTEL_EXPORTER_JAEGER_GRPC_INSECURE: "true"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-c"
     command: "opentelemetry-instrument python main.py"
 
   app-d:
-    build: ./fastapi_app_plain/
+    build: ./app_fastapi/
     container_name: app-d
     ports:
       - "8003:8000"
     environment:
-      APP_NAME: "app-d"
-      TARGET_ONE_HOST: "app-b"
-      TARGET_TWO_HOST: "app-c"
+      TARGET_ONE_SVC: "app-a:8000"
+      TARGET_TWO_SVC: "app-b:8000"
       OTEL_PYTHON_LOG_CORRELATION: "true"
-      OTEL_TRACES_EXPORTER: "jaeger_thrift"
-      OTEL_EXPORTER_JAEGER_ENDPOINT: "http://jaeger-collector:14268/api/traces"
+      OTEL_TRACES_EXPORTER: "jaeger_proto"
+      OTEL_EXPORTER_JAEGER_ENDPOINT: "jaeger-collector:14250"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-d"
     command: "opentelemetry-instrument python main.py"
@@ -106,3 +102,11 @@ services:
     restart: on-failure
     depends_on:
       - cassandra-schema
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources

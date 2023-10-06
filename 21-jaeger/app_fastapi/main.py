@@ -2,46 +2,27 @@ import logging
 import os
 import random
 import time
-from typing import Optional
 
 import httpx
 import uvicorn
-from fastapi import FastAPI, Response
-from utils import PrometheusMiddleware, metrics
+from fastapi import FastAPI, Response, Request
 
-APP_NAME = os.environ.get("APP_NAME", "app")
 EXPOSE_PORT = os.environ.get("EXPOSE_PORT", 8000)
 
-TARGET_ONE_HOST = os.environ.get("TARGET_ONE_HOST", "app-b")
-TARGET_TWO_HOST = os.environ.get("TARGET_TWO_HOST", "app-c")
+TARGET_ONE_SVC = os.environ.get("TARGET_ONE_SVC", "localhost:8000")
+TARGET_TWO_SVC = os.environ.get("TARGET_TWO_SVC", "localhost:8000")
 
 app = FastAPI()
 
-# Setting metrics middleware
-app.add_middleware(PrometheusMiddleware, app_name=APP_NAME)
-app.add_route("/metrics", metrics)
-
-
-class EndpointFilter(logging.Filter):
-    # Uvicorn endpoint access log filter
-    def filter(self, record: logging.LogRecord) -> bool:
-        return record.getMessage().find("GET /metrics") == -1
-
-
-# Filter out /endpoint
-logging.getLogger("uvicorn.access").addFilter(EndpointFilter())
-
-
 @app.get("/")
-async def read_root():
+async def read_root(request: Request):
+    logging.info(f"Request headers: {request.headers}")
     logging.error("Hello World")
+    logging.debug("Debugging log")
+    logging.info("Info log")
+    logging.warning("Hey, This is a warning!")
+    logging.error("Oops! We have an Error. OK")
     return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-async def read_item(item_id: int, q: Optional[str] = None):
-    logging.error("items")
-    return {"item_id": item_id, "q": q}
 
 
 @app.get("/io_task")
@@ -86,9 +67,9 @@ async def chain(response: Response):
     async with httpx.AsyncClient() as client:
         await client.get("http://localhost:8000/")
     async with httpx.AsyncClient() as client:
-        await client.get(f"http://{TARGET_ONE_HOST}:8000/io_task")
+        await client.get(f"http://{TARGET_ONE_SVC}/io_task")
     async with httpx.AsyncClient() as client:
-        await client.get(f"http://{TARGET_TWO_HOST}:8000/cpu_task")
+        await client.get(f"http://{TARGET_TWO_SVC}/cpu_task")
     logging.info("Chain Finished")
     return {"path": "/chain"}
 
