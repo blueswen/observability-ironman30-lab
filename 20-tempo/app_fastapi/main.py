@@ -20,7 +20,7 @@ async def read_root(request: Request):
     logging.error("Hello World")
     logging.debug("Debugging log")
     logging.info("Info log")
-    logging.warn("Hey, This is a warning!")
+    logging.warning("Hey, This is a warning!")
     logging.error("Oops! We have an Error. OK")
     return {"Hello": "World"}
 
