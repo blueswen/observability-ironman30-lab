@@ -2,8 +2,6 @@
 
 ## Quick Start
 
-### Basic
-
 1. 啟動所有服務
 
     ```bash
