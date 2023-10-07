@@ -1,0 +1,88 @@
+version: "3.4"
+
+services:
+  
+  app-a:
+    build: ./app_fastapi/
+    container_name: app-a
+    ports:
+      - "8000:8000"
+    environment:
+      TARGET_ONE_SVC: "app-b:8000"
+      TARGET_TWO_SVC: "app-c:8000"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-a"
+    command: "opentelemetry-instrument python main.py"
+
+  app-b:
+    build: ./app_fastapi/
+    container_name: app-b
+    ports:
+      - "8001:8000"
+    environment:
+      TARGET_ONE_SVC: "app-c:8000"
+      TARGET_TWO_SVC: "app-a:8000"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-b"
+    command: "opentelemetry-instrument python main.py"
+
+  app-c:
+    build: ./app_fastapi/
+    container_name: app-c
+    ports:
+      - "8002:8000"
+    environment:
+      TARGET_ONE_SVC: "app-b:8000"
+      TARGET_TWO_SVC: "app-a:8000"
+      OTEL_PYTHON_LOG_CORRELATION: "true"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-c"
+    command: "opentelemetry-instrument python main.py"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.86.0
+    container_name: otel-collector
+    command:
+      - "--config=/conf/config.yaml"
+    volumes:
+      - ./etc/otel-collector/config.yaml:/conf/config.yaml
+    ports:
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+      - "8888:8888"
+    restart: on-failure
+    depends_on:
+      - tempo
+
+  tempo:
+    image: grafana/tempo:2.2.3
+    container_name: tempo
+    command: 
+      - "--target=all"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo"
+      - "--auth.enabled=false"
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    command:
+      - "--enable-feature=remote-write-receiver"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus/:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
