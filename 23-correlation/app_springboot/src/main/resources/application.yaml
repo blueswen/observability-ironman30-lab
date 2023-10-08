@@ -11,3 +11,8 @@ management:
         http:
           server:
             requests: 'true'
+logging:
+  pattern:
+    level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} trace_flags=%mdc{trace_flags} %p"
+  level:
+    com.example.app: DEBUG
