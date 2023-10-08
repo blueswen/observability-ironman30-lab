@@ -1,0 +1,108 @@
+x-logging: &default-logging
+  driver: loki
+  options:
+    loki-url: 'http://localhost:3100/api/prom/push'
+
+version: "3.4"
+
+services:
+  
+  app-a:
+    build: ./app_fastapi/
+    container_name: app-a
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app_fastapi/:/app
+    environment:
+      APP_NAME: "app-a"
+      TARGET_ONE_SVC: "app-b:8000"
+      TARGET_TWO_SVC: "app-c:8080"
+      OTLP_GRPC_ENDPOINT: "http://tempo:4317"
+    command: "python main.py"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  app-b:
+    build: ./app_fastapi/
+    container_name: app-b
+    ports:
+      - "8001:8000"
+    environment:
+      APP_NAME: "app-b"
+      TARGET_ONE_SVC: "app-c:8080"
+      TARGET_TWO_SVC: "app-a:8000"
+      OTLP_GRPC_ENDPOINT: "http://tempo:4317"
+    command: "python main.py"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  app-c:
+    build: ./app_springboot/
+    container_name: app-c
+    ports:
+      - "8002:8080"
+    environment:
+      TARGET_ONE_SVC: "app-a:8000"
+      TARGET_TWO_SVC: "app-b:8000"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4317"
+      OTEL_METRICS_EXPORTER: "none"
+      OTEL_SERVICE_NAME: "app-c"
+      OTEL_RESOURCE_ATTRIBUTES: "compose_service=app-c"
+      MANAGEMENT_METRICS_TAGS_APPLICATION: app-c
+    command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  tempo:
+    image: grafana/tempo:2.2.3
+    container_name: tempo
+    volumes:
+      - ./etc/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+    command: 
+      - "--target=all"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo"
+      - "--auth.enabled=false"
+      - "--config.file=/etc/tempo/tempo.yaml"
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  prometheus:
+    image: prom/prometheus:v2.28.1
+    container_name: prometheus
+    command:
+      - "--enable-feature=remote-write-receiver"
+      - "--enable-feature=exemplar-storage"
+      - "--config.file=/workspace/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus:/workspace
+    depends_on:
+      - loki
+    logging: *default-logging
+
+  loki:
+    image: grafana/loki:2.9.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: "tempoServiceGraph,traceToMetrics"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+    depends_on:
+      - loki
+    logging: *default-logging
