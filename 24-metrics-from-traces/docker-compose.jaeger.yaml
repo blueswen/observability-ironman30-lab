@@ -1,0 +1,98 @@
+version: "3.4"
+
+services:
+  fastapi:
+    build: ./app_fastapi/
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - TARGET_ONE_SVC=spring-boot:8080
+      - TARGET_TWO_SVC=spring-boot:8080
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_SERVICE_NAME=fastapi
+    command: "opentelemetry-instrument python main.py"
+
+  spring-boot:
+    build: ./app_springboot/
+    container_name: spring-boot
+    ports:
+      - "8080:8080"
+    environment:
+      - TARGET_ONE_SVC=fastapi:8000
+      - TARGET_TWO_SVC=fastapi:8000
+      - OTEL_EXPORTER=otlp_span
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_INSECURE=true
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_SERVICE_NAME=sprint-boot
+    command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.86.0
+    container_name: otel-collector
+    command:
+      - "--config=/conf/config.yaml"
+    volumes:
+      - ./etc/otel-collector/jaeger.yaml:/conf/config.yaml
+    ports:
+      - "4317" # OTLP gRPC receiver
+      - "4318" # OTLP http receiver
+      - "8889:8889" # Prometheus metrics exporter
+    restart: on-failure
+    depends_on:
+      - jaeger-collector
+
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector:1.50.0
+    container_name: jaeger-collector
+    command: 
+      - "--cassandra.keyspace=jaeger_v1_dc1"
+      - "--cassandra.servers=cassandra"
+      - "--collector.otlp.enabled=true"
+    ports:
+      - "4317" # accept OpenTelemetry Protocol (OTLP) over gRPC
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
+
+  cassandra:
+    image: cassandra:4.1.2
+    container_name: cassandra
+
+  cassandra-schema:
+    image: jaegertracing/jaeger-cassandra-schema:1.50.0
+    container_name: cassandra-schema
+    depends_on:
+      - cassandra
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query:1.50.0
+    container_name: jaeger-query
+    environment:
+      - METRICS_STORAGE_TYPE=prometheus
+    command:
+      - "--cassandra.keyspace=jaeger_v1_dc1"
+      - "--cassandra.servers=cassandra"
+      - "--prometheus.query.support-spanmetrics-connector=true"
+      - "--prometheus.server-url=http://prometheus:9090"
+      - "--prometheus.query.normalize-duration=true"
+      - "--prometheus.query.normalize-calls=true"
+    ports:
+      - "16686:16686"
+      - "16687:16687"
+    restart: on-failure
+    depends_on:
+      - cassandra-schema
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./etc/prometheus/:/etc/prometheus/
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
