@@ -1,4 +1,4 @@
-# Tempo
+# Metrics From Traces
 
 ## Quick Start
 
