@@ -1,5 +1,7 @@
 # Correlation
 
+![Lab Architecture](./img/23-lab-arch.png)
+
 ## Quick Start
 
 1. 安裝 [Loki Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/)
