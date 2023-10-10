@@ -1,0 +1,63 @@
+version: "3.4"
+
+services:
+  
+  fastapi:
+    build: ./app_fastapi/
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      TARGET_ONE_SVC: "fastapi:8000"
+      TARGET_TWO_SVC: "spring-boot:8080"
+      APP_NAME: fastapi
+      PYROSCOPE_SERVER: http://pyroscope:4040
+    volumes:
+      - ./app_fastapi/:/app
+    command: "python main.py"
+
+  spring-boot:
+    build: ./app_springboot/
+    container_name: spring-boot
+    ports:
+      - "8002:8080"
+    environment:
+      TARGET_ONE_SVC: "spring-boot:8080"
+      TARGET_TWO_SVC: "fastapi:8000"
+      PYROSCOPE_APPLICATION_NAME: spring-boot
+      PYROSCOPE_SERVER_ADDRESS: http://pyroscope:4040
+    command: "java -javaagent:/pyroscope.jar -jar /app.jar"
+
+  pyroscope:
+    image: grafana/pyroscope:1.0.0
+    container_name: pyroscope
+    ports:
+      - "4040:4040"
+
+  agent:
+    image: 'grafana/agent:v0.36.2'
+    container_name: agent
+    user: root
+    privileged: true
+    pid: 'host'
+    environment:
+      - AGENT_MODE=flow
+    volumes:
+      - ./etc/config.river:/config.river
+    ports:
+      - '12345:12345'
+    command:
+      - 'run'
+      - '/config.river'
+      - '--storage.path=/tmp/agent'
+      - '--server.http.listen-addr=0.0.0.0:12345'
+
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_FEATURE_TOGGLES_ENABLE=flameGraph
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
