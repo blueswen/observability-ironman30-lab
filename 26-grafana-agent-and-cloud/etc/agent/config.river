@@ -1,0 +1,72 @@
+// Prometheus
+
+prometheus.scrape "default" {
+  targets = [{"__address__" = "localhost:12345"}]
+  forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+prometheus.scrape "app" {
+  targets = [
+    {"__address__" = "app-a:8000", "app" = "app-a"},
+    {"__address__" = "app-b:8000", "app" = "app-b"},
+    {"__address__" = "app-c:8000", "app" = "app-c"},
+  ]
+  forward_to = [prometheus.remote_write.prom.receiver]
+}
+
+prometheus.remote_write "prom" {
+  endpoint {
+    url = "http://prometheus:9090/api/v1/write"
+  }
+}
+
+// Loki
+
+loki.source.docker "default" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.linux.targets 
+  forward_to = [loki.write.local.receiver]
+  relabel_rules = loki.relabel.docker_label.rules
+}
+
+discovery.docker "linux" {
+  host = "unix:///var/run/docker.sock"
+}
+
+loki.relabel "docker_label" {
+  forward_to = [loki.write.local.receiver]
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// Tempo
+
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  output {
+    traces  = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "http://tempo:4317"
+    tls {
+      insecure = true
+      insecure_skip_verify = true
+    }
+  }
+}
