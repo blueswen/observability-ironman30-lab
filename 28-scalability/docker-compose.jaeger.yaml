@@ -45,19 +45,6 @@ services:
       retries: 3
       start_period: 5s
 
-  jaeger-remote-storage:
-    image: jaegertracing/jaeger-remote-storage:1.50.0
-    container_name: jaeger-remote-storage
-    ports:
-      - 17271:17271
-    environment:
-      - SPAN_STORAGE_TYPE=memory
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:17270/ || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-
   jaeger-collector:
     image: jaegertracing/jaeger-collector:1.50.0
     container_name: jaeger-collector
@@ -100,6 +87,19 @@ services:
         condition: service_healthy
       jaeger-collector:
         condition: service_healthy
+
+  jaeger-remote-storage:
+    image: jaegertracing/jaeger-remote-storage:1.50.0
+    container_name: jaeger-remote-storage
+    ports:
+      - 17271:17271
+    environment:
+      - SPAN_STORAGE_TYPE=memory
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:17270/ || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
   jaeger-query:
     image: jaegertracing/jaeger-query:1.50.0
