@@ -1,0 +1,35 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http: 
+
+exporters:
+  otlp/tempo-1:
+    endpoint: tempo-1:4317
+    tls:
+      insecure: true
+
+  otlp/tempo-2:
+    endpoint: tempo-2:4317
+    tls:
+      insecure: true
+
+processors:
+  batch:
+  filter:
+    error_mode: ignore
+    traces:
+      span:
+        - attributes["http.method"] == nil
+
+service:
+  pipelines:
+    traces/tempo-1:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo-1]
+    traces/tempo-2:
+      receivers: [otlp]
+      processors: [batch, filter]
+      exporters: [otlp/tempo-2]

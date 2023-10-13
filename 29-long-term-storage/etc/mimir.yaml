@@ -1,0 +1,42 @@
+multitenancy_enabled: false
+
+common:
+  storage:
+    backend: s3
+    s3:
+      endpoint: minio:9000
+      access_key_id: minio
+      secret_access_key: supersecret
+      insecure: true
+      bucket_name: mimir-data
+
+ruler_storage:
+  s3:
+    bucket_name: mimir-ruler
+
+compactor:
+  data_dir: /tmp/mimir/compactor
+  sharding_ring:
+    kvstore:
+      store: memberlist
+
+distributor:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: memberlist
+
+ingester:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: memberlist
+    replication_factor: 1
+
+server:
+  http_listen_port: 9009
+  log_level: warn
+
+store_gateway:
+  sharding_ring:
+    replication_factor: 1
