@@ -29,6 +29,7 @@
 
     ```bash
     docker-compose down
+    ```
 
 ### OpenTelemetry Collector Filter
 
@@ -45,6 +46,7 @@
 
     ```bash
     docker-compose -f docker-compose.otel.yaml down
+    ```
 
 ## Goals
 
