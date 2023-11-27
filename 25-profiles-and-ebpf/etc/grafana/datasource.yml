@@ -19,3 +19,28 @@ datasources:
     isDefault: true
     readOnly: false
     editable: true
+  - uid: tempo
+    orgId: 1
+    name: Tempo
+    type: tempo
+    typeName: Tempo
+    access: proxy
+    url: http://tempo
+    isDefault: false
+    jsonData:
+      httpMethod: GET
+  - uid: prometheus
+    orgId: 1
+    name: Prometheus
+    type: prometheus
+    typeName: Prometheus
+    access: proxy
+    url: http://prometheus:9090
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    jsonData:
+      httpMethod: POST
+    readOnly: false
+    editable: true

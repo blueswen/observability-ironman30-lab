@@ -12,6 +12,7 @@ services:
       TARGET_TWO_SVC: "spring-boot:8080"
       APP_NAME: fastapi
       PYROSCOPE_SERVER: http://pyroscope:4040
+      ENABLE_PYROSCOPE: "true"
     volumes:
       - ./app_fastapi/:/app
     command: "python main.py"
@@ -20,7 +21,7 @@ services:
     build: ./app_springboot/
     container_name: spring-boot
     ports:
-      - "8002:8080"
+      - "8080:8080"
     environment:
       TARGET_ONE_SVC: "spring-boot:8080"
       TARGET_TWO_SVC: "fastapi:8000"

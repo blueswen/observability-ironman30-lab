@@ -4,23 +4,26 @@ import random
 import time
 
 import httpx
-import uvicorn
-from fastapi import FastAPI, Response, Request
 import pyroscope
+import uvicorn
+from fastapi import FastAPI, Request, Response
 
 APP_NAME = os.environ.get("APP_NAME", "fastapi-demo-app")
 EXPOSE_PORT = os.environ.get("EXPOSE_PORT", 8000)
+ENABLE_PYROSCOPE = os.environ.get("ENABLE_PYROSCOPE", "false")
 PYROSCOPE_SERVER = os.environ.get("PYROSCOPE_SERVER", "http://pyroscope:4040")
 
-pyroscope.configure(
-  application_name = APP_NAME, # replace this with some name for your application
-  server_address   = PYROSCOPE_SERVER, # replace this with the address of your Pyroscope server
-)
+if ENABLE_PYROSCOPE == "true":
+    pyroscope.configure(
+        application_name=APP_NAME,  # replace this with some name for your application
+        server_address=PYROSCOPE_SERVER,  # replace this with the address of your Pyroscope server
+    )
 
 TARGET_ONE_SVC = os.environ.get("TARGET_ONE_SVC", "localhost:8000")
 TARGET_TWO_SVC = os.environ.get("TARGET_TWO_SVC", "localhost:8000")
 
 app = FastAPI()
+
 
 @app.get("/")
 async def read_root(request: Request):
@@ -40,17 +43,20 @@ async def io_task():
     io_task_sync()
     return "IO bound task finish!"
 
+
 def io_task_sync():
     time.sleep(1)
     logging.error("io task")
     io_task_sync_1()
     return "IO bound task finish!"
 
+
 def io_task_sync_1():
     time.sleep(1)
     logging.error("io task")
     io_task_sync_2()
     return "IO bound task finish!"
+
 
 def io_task_sync_2():
     time.sleep(1)
@@ -61,7 +67,7 @@ def io_task_sync_2():
 @app.get("/cpu_task")
 async def cpu_task():
     for i in range(1000):
-        n = i*i*i
+        n = i * i * i
     logging.error("cpu task")
     return "CPU bound task finish!"
 
@@ -88,7 +94,6 @@ async def error_test(response: Response):
 
 @app.get("/chain")
 async def chain(response: Response):
-
     logging.info("Chain Started")
     async with httpx.AsyncClient() as client:
         await client.get("http://localhost:8000/")
@@ -98,6 +103,7 @@ async def chain(response: Response):
         await client.get(f"http://{TARGET_TWO_SVC}/cpu_task")
     logging.info("Chain Finished")
     return {"path": "/chain"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=EXPOSE_PORT)
