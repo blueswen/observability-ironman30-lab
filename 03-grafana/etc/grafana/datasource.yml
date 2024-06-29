@@ -25,7 +25,6 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true
   - uid: testdata
     orgId: 1
     name: TestData

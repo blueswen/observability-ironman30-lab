@@ -3,18 +3,26 @@ server:
   http_listen_port: 3100
 memberlist:
   join_members:
-    - loki-read:7946
+    - loki-read
+    - loki-write
+  dead_node_reclaim_time: 30s
+  gossip_to_dead_nodes_time: 15s
+  left_ingesters_timeout: 30s
+  bind_addr: ['0.0.0.0']
+  bind_port: 7946
+  gossip_interval: 2s
 schema_config:
   configs:
     - from: 2021-08-01
       store: tsdb
       object_store: s3
-      schema: v12
+      schema: v13
       index:
         prefix: index_
         period: 24h
 common:
   path_prefix: /loki
+  compactor_address: http://loki-write:3100
   replication_factor: 1
   storage:
     s3:
@@ -31,3 +39,5 @@ ruler:
   storage:
     s3:
       bucketnames: loki-ruler
+compactor:
+  working_directory: /tmp/compactor

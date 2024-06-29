@@ -1,8 +1,8 @@
-# Grafana Agent and Cloud
+# Grafana Alloy and Cloud
 
 ## Quick Start
 
-### Grafana Agent
+### Grafana Alloy
 
 1. 啟動所有服務
 
@@ -16,7 +16,7 @@
       2. app-b: [http://localhost:8001](http://localhost:8001)
       3. app-c: [http://localhost:8002](http://localhost:8002)
    2. Prometheus: [http://localhost:9090](http://localhost:9090)
-   3. Grafana Agent: [http://localhost:12345](http://localhost:12345)
+   3. Grafana Alloy: [http://localhost:12345](http://localhost:12345)
    4. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
       1. 使用 [k6](https://k6.io/) 發送 Request
 
@@ -48,7 +48,7 @@
       2. app-b: [http://localhost:8001](http://localhost:8001)
       3. app-c: [http://localhost:8002](http://localhost:8002)
    2. Prometheus: [http://localhost:9090](http://localhost:9090)
-   3. Grafana Agent: [http://localhost:12345](http://localhost:12345)
+   3. Grafana Alloy: [http://localhost:12345](http://localhost:12345)
    4. Grafana: 進入 Grafana Cloud 上的 Grafana
       1. 使用 [k6](https://k6.io/) 發送 Request
 
@@ -65,13 +65,13 @@
 
 ## Goals
 
-### Grafana Agent
+### Grafana Alloy
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
+   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
    2. 透過 OpenTelemetry Manual Instrumentation，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
-2. 建立 Grafana Agent
+2. 建立 Grafana Alloy
    1. 爬取 Prometheus Metrics 後 Remote Write 至 Prometheus
    2. 爬取 Docker Container Log 後轉送至 Loki
    3. 接收 OTEL 格式的 Trace 資料後轉發至 Tempo
@@ -83,10 +83,10 @@
 ### Grafana Cloud
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
+   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
    2. 透過 OpenTelemetry Manual Instrumentation，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
-2. 建立 Grafana Agent
+2. 建立 Grafana Alloy
    1. 爬取 Prometheus Metrics 後 Remote Write 至 Grafana Cloud Prometheus
    2. 爬取 Docker Container Log 後轉送至 Grafana Cloud Loki
    3. 接收 OTEL 格式的 Trace 資料後轉發至 Grafana Cloud Tempo

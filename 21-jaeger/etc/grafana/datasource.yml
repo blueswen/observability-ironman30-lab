@@ -19,4 +19,3 @@ datasources:
     url: http://jaeger-query:16686
     isDefault: true
     readOnly: false
-    editable: true

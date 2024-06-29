@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000
@@ -22,7 +22,8 @@ services:
       - 8126:8126
 
   flask-pystatsd:
-    build: ./flask_pystatsd/
+    # build: ../app/flask-pystatsd/
+    image: ghcr.io/blueswen/observability-ironman30-lab/flask-pystatsd:latest
     container_name: flask
     environment:
       - STATSD_HOST=graphite-statsd

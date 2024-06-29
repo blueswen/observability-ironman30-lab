@@ -5,7 +5,7 @@ version: "3.4"
 services:
   
   k6-tracing:
-    image: ghcr.io/grafana/xk6-client-tracing:v0.0.2
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.5
     container_name: k6-tracing
     environment:
       - ENDPOINT=jaeger-collector:4317
@@ -14,7 +14,7 @@ services:
       - jaeger-collector
 
   zookeeper:
-    image: bitnami/zookeeper:3.9.1
+    image: bitnami/zookeeper:3.9.2
     container_name: zookeeper
     ports:
       - 2181:2181
@@ -22,7 +22,7 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
   
   kafka:
-    image: 'bitnami/kafka:3.5.1'
+    image: 'bitnami/kafka:3.7.0'
     container_name: kafka
     ports:
       - '9092:9092'
@@ -45,8 +45,16 @@ services:
       retries: 3
       start_period: 5s
 
+  redpanda-console:
+    image: redpandadata/console:v2.6.0
+    container_name: redpanda-console
+    ports:
+      - 8080:8080
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+
   jaeger-collector:
-    image: jaegertracing/jaeger-collector:1.50.0
+    image: jaegertracing/jaeger-collector:1.58.1
     container_name: jaeger-collector
     command:
       - "--collector.otlp.enabled=true"
@@ -67,7 +75,7 @@ services:
         condition: service_healthy
 
   jaeger-ingester:
-    image: jaegertracing/jaeger-ingester:1.50.0
+    image: jaegertracing/jaeger-ingester:1.58.1
     container_name: jaeger-ingester
     command:
       - "--grpc-storage.server=jaeger-remote-storage:17271"
@@ -89,7 +97,7 @@ services:
         condition: service_healthy
 
   jaeger-remote-storage:
-    image: jaegertracing/jaeger-remote-storage:1.50.0
+    image: jaegertracing/jaeger-remote-storage:1.58.1
     container_name: jaeger-remote-storage
     ports:
       - 17271:17271
@@ -102,7 +110,7 @@ services:
       retries: 3
 
   jaeger-query:
-    image: jaegertracing/jaeger-query:1.50.0
+    image: jaegertracing/jaeger-query:1.58.1
     container_name: jaeger-query
     command:
       - "--grpc-storage.server=jaeger-remote-storage:17271"

@@ -3,7 +3,8 @@ version: "3.4"
 services:
   
   app-a:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-a
     ports:
       - "8000:8000"
@@ -18,7 +19,8 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-b:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-b
     ports:
       - "8001:8000"
@@ -34,7 +36,8 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-c:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-c
     ports:
       - "8002:8000"
@@ -50,7 +53,8 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-d:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-d
     ports:
       - "8003:8000"
@@ -60,12 +64,13 @@ services:
       OTEL_PYTHON_LOG_CORRELATION: "true"
       OTEL_TRACES_EXPORTER: "jaeger_proto"
       OTEL_EXPORTER_JAEGER_ENDPOINT: "jaeger-collector:14250"
+      OTEL_EXPORTER_JAEGER_GRPC_INSECURE: "true"
       OTEL_METRICS_EXPORTER: "none"
       OTEL_SERVICE_NAME: "app-d"
     command: "opentelemetry-instrument python main.py"
 
   jaeger-collector:
-    image: jaegertracing/jaeger-collector:1.49.0
+    image: jaegertracing/jaeger-collector:1.58.1
     container_name: jaeger-collector
     command: 
       - "--cassandra.keyspace=jaeger_v1_dc1"
@@ -81,17 +86,17 @@ services:
       - cassandra-schema
 
   cassandra:
-    image: cassandra:4.1.2
+    image: cassandra:4.1.5
     container_name: cassandra
 
   cassandra-schema:
-    image: jaegertracing/jaeger-cassandra-schema:1.49.0
+    image: jaegertracing/jaeger-cassandra-schema:1.58.1
     container_name: cassandra-schema
     depends_on:
       - cassandra
 
   jaeger-query:
-    image: jaegertracing/jaeger-query:1.49.0
+    image: jaegertracing/jaeger-query:1.58.1
     container_name: jaeger-query
     command:
       - "--cassandra.keyspace=jaeger_v1_dc1"
@@ -104,7 +109,7 @@ services:
       - cassandra-schema
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - "3000:3000"

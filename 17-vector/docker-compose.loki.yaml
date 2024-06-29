@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   nginx:
-    image: nginxdemos/hello:0.3
+    image: nginxdemos/hello:0.4
     container_name: nginx
     ports:
       - "8080:80"
@@ -11,7 +11,7 @@ services:
       - logger=vector
 
   vector:
-    image: timberio/vector:0.33.0-alpine
+    image: timberio/vector:0.39.0-alpine
     container_name: vector
     command: --config /etc/vector/vector.yaml
     volumes:
@@ -21,7 +21,7 @@ services:
       - loki
     
   loki:
-    image: grafana/loki:2.9.0
+    image: grafana/loki:3.0.0
     container_name: loki
     ports:
       - "3100:3100"
@@ -30,7 +30,7 @@ services:
       - logger=vector
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000

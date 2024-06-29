@@ -23,20 +23,23 @@
       1. 左上下拉選單可查看不同服務的 Profile
          1. fastapi：FastAPI App 使用 SDK 取得的 Profile
          2. spring-boot：Spring Boot App 使用 SDK 取得的 Profile
-         3. compose-example：Grafana Agent 透過 eBPF 取得的所有 Container Profile
-         4. pyroscope：Pyroscope 服務本身的 Profile
+         3. pyroscope：Pyroscope 服務本身的 Profile
+         4. ebpf 開頭：Grafana Alloy 透過 eBPF 取得的所有 Container Profile
    5. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
       1. 點擊左上 Menu > Explore，左上 Data Source 選擇 `Pyroscope`
          1. 查詢條件選擇 `process_cpu - cpu`，查詢語法輸入
             1. `{service_name="fastapi"}` 可以查看 FastAPI App 使用 SDK 取得的 CPU Profile
             2. `{service_name="spring-boot"}` 可以查看 Spring Boot App 使用 SDK 取得的 CPU Profile
-            3. `{service_name="compose-example"}` 可以查看 Grafana Agent 透過 eBPF 取得的所有 Container CPU Profile
-            4. `{service_name="pyroscope"}` 可以查看 Pyroscope 服務本身的 CPU Profile
+            3. `{service_name="pyroscope"}` 可以查看 Pyroscope 服務本身的 CPU Profile
+            4. `service_name` 選擇 ebpf 開頭的 service，可以查看 Grafana Alloy 透過 eBPF 取得的所有 Container CPU Profile
 3. 關閉所有服務
 
     ```bash
     docker-compose down
     ```
+
+> [!WARNING]  
+> 目前(2024/06/29) Pyroscope 因相依的 py-spy 尚不支援 Python 3.12，後續追蹤請參考 [Unsupported version of Python: 3.12.0](https://github.com/grafana/pyroscope-rs/issues/168)。
 
 ### Beyla
 
@@ -63,8 +66,8 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
 
    4. Grafana: [http://localhost:3000](http://localhost:3000)，登入帳號密碼為 `admin/admin`
       1. 點擊左上 Menu > Explore，左上 Data Source 選擇 `Prometheus`
-         1. 查詢語法輸入 `http_server_duration_seconds_count{job="fastapi-beyla"}` 可以查詢 FastAPI App 的 Metrics
-         2. 查詢語法輸入 `http_server_duration_seconds_count{job="spring-boot-beyla"}` 可以查詢 Spring Boot App 的 Metrics
+         1. 查詢語法輸入 `http_server_request_duration_seconds_count{job="fastapi-beyla"}` 可以查詢 FastAPI App 的 Metrics
+         2. 查詢語法輸入 `http_server_request_duration_seconds_count{job="spring-boot-beyla"}` 可以查詢 Spring Boot App 的 Metrics
       2. 點擊左上 Menu > Explore，左上 Data Source 選擇 `Tempo`
          1. Query Type：Search 可以查詢 Traces
 3. 關閉所有服務
@@ -79,7 +82,7 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
 
 1. 建立 FastAPI App（fastapi），透過 [Pyroscope Python SDK](https://github.com/grafana/pyroscope/tree/main) 收集 Profile 資料，並發送至 Pyroscope
 2. 建立 Spring Boot App（spring-boot），透過 [Agent Jar](https://grafana.com/docs/pyroscope/next/configure-client/language-sdks/java/#start-pyroscope-as-javaagent) 的方式使用 [Pyroscope Java SDK](https://github.com/grafana/pyroscope-java) 收集 Profile 資料，並發送至 Pyroscope
-3. 建立 [Grafana Agent](https://grafana.com/oss/agent/)，透過 eBPF 收集 Container 的 Profile 資料，並發送至 Pyroscope
+3. 建立 [Grafana Alloy](https://github.com/grafana/alloy/)，透過 eBPF 收集 Container 的 Profile 資料，並發送至 Pyroscope
 4. 建立 Pyroscope，接收 Profile 資料，並提供 Web UI 查詢
 5. 建立 Grafana，查詢 Pyroscope 資料
 
@@ -91,10 +94,7 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
 4. 建立 Tempo，接收 fastapi-beyla 與 spring-boot-beyl 發送的 Traces 資料
 5. 建立 Grafana，查詢 Tempo、Prometheus 資料
 
-> [!WARNING]  
-> 目前 Beyla(1.0.1) 尚不支援分散式追蹤，但該功能已在進行開發中
-
 ## 參考資料
 
 1. [Grafana Pyroscope documentation](https://grafana.com/docs/pyroscope/latest/)
-2. [Grafana Agent Pull Mode Integration](https://github.com/grafana/pyroscope/tree/main/examples/grafana-agent)
+2. [Grafana Alloy Pull Mode Integration](https://github.com/grafana/pyroscope/tree/main/examples/grafana-agent)

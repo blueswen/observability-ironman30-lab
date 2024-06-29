@@ -3,21 +3,21 @@ version: "3.4"
 services:
   
   app-a:
-    build: ./app_fastapi/
+    # build: ../app/fastapi-otel/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi-otel:latest
     container_name: app-a
     ports:
       - "8000:8000"
-    volumes:
-      - ./app_fastapi/:/app
     environment:
       APP_NAME: "app-a"
       TARGET_ONE_SVC: "app-b:8000"
       TARGET_TWO_SVC: "app-c:8000"
-      OTLP_GRPC_ENDPOINT: "http://grafana-agent:4317"
+      OTLP_GRPC_ENDPOINT: "http://alloy:4317"
     command: "python main.py"
 
   app-b:
-    build: ./app_fastapi/
+    # build: ../app/fastapi-otel/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi-otel:latest
     container_name: app-b
     ports:
       - "8001:8000"
@@ -25,11 +25,12 @@ services:
       APP_NAME: "app-b"
       TARGET_ONE_SVC: "app-c:8000"
       TARGET_TWO_SVC: "app-a:8000"
-      OTLP_GRPC_ENDPOINT: "http://grafana-agent:4317"
+      OTLP_GRPC_ENDPOINT: "http://alloy:4317"
     command: "python main.py"
 
   app-c:
-    build: ./app_fastapi/
+    # build: ../app/fastapi-otel/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi-otel:latest
     container_name: app-c
     ports:
       - "8002:8000"
@@ -37,25 +38,22 @@ services:
       APP_NAME: "app-c"
       TARGET_ONE_SVC: "app-a:8000"
       TARGET_TWO_SVC: "app-b:8000"
-      OTLP_GRPC_ENDPOINT: "http://grafana-agent:4317"
+      OTLP_GRPC_ENDPOINT: "http://alloy:4317"
     command: "python main.py"
 
-  grafana-agent:
-    image: grafana/agent:v0.37.1
-    container_name: grafana-agent
+  alloy:
+    image: grafana/alloy:v1.2.0
+    container_name: alloy
     ports:
       - "12345:12345"
       - "12348:12348"
       - "6832:6832"
       - "55679:55679"
     volumes:
-      - ./etc/agent/cloud.river:/etc/agent/agent.river
+      - ./etc/alloy/cloud.alloy:/etc/alloy/config.alloy
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      AGENT_MODE: flow
     env_file: ./cloud.env
-    command: [
-      "run",
-      "--server.http.listen-addr=0.0.0.0:12345",
-      "/etc/agent/agent.river",
-    ]
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy/config.alloy

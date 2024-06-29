@@ -9,3 +9,18 @@ storage:
       access_key: minio
       secret_key: supersecret
       insecure: true
+
+metrics_generator:
+  storage:
+    path: "/tmp/metrics"
+    remote_write:
+      - url: "http://mimir:9009/api/v1/push"
+  processor:
+    span_metrics:
+      dimensions:
+        - http.status_code
+
+overrides:
+  metrics_generator_processors:
+    - service-graphs
+    - span-metrics

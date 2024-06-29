@@ -31,7 +31,7 @@ services:
     command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.86.0
+    image: otel/opentelemetry-collector-contrib:0.102.0
     container_name: otel-collector
     command:
       - "--config=/conf/config.yaml"
@@ -46,7 +46,7 @@ services:
       - jaeger-collector
 
   jaeger-collector:
-    image: jaegertracing/jaeger-collector:1.50.0
+    image: jaegertracing/jaeger-collector:1.58.1
     container_name: jaeger-collector
     command: 
       - "--cassandra.keyspace=jaeger_v1_dc1"
@@ -59,24 +59,24 @@ services:
       - cassandra-schema
 
   cassandra:
-    image: cassandra:4.1.2
+    image: cassandra:4.1.5
     container_name: cassandra
 
   cassandra-schema:
-    image: jaegertracing/jaeger-cassandra-schema:1.50.0
+    image: jaegertracing/jaeger-cassandra-schema:1.58.1
     container_name: cassandra-schema
     depends_on:
       - cassandra
 
   jaeger-query:
-    image: jaegertracing/jaeger-query:1.50.0
+    image: jaegertracing/jaeger-query:1.58.1
     container_name: jaeger-query
     environment:
       - METRICS_STORAGE_TYPE=prometheus
+      - LOG_LEVEL=debug
     command:
       - "--cassandra.keyspace=jaeger_v1_dc1"
       - "--cassandra.servers=cassandra"
-      - "--prometheus.query.support-spanmetrics-connector=true"
       - "--prometheus.server-url=http://prometheus:9090"
       - "--prometheus.query.normalize-duration=true"
       - "--prometheus.query.normalize-calls=true"
@@ -88,7 +88,7 @@ services:
       - cassandra-schema
 
   prometheus:
-    image: prom/prometheus:v2.45.0
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     ports:
       - "9090:9090"

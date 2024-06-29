@@ -14,7 +14,8 @@ version: "3.7"
 services:
 
   fastapi:
-    build: ./fastapi_app_plain/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"
@@ -23,7 +24,7 @@ services:
     logging: *default-logging
 
   nginx:
-    image: nginxdemos/hello:0.3
+    image: nginxdemos/hello:0.4
     container_name: nginx
     ports:
       - "8080:80"
@@ -32,14 +33,14 @@ services:
     logging: *default-logging
     
   loki:
-    image: grafana/loki:2.9.0
+    image: grafana/loki:3.0.0
     container_name: loki
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000

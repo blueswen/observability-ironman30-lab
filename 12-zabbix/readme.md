@@ -22,7 +22,7 @@
 
             ```bash
             docker exec -it grafana /bin/bash
-            grafana-cli plugins install alexanderzobnin-zabbix-app
+            grafana cli plugins install alexanderzobnin-zabbix-app
             CTRL + D # 離開 Container
             ```
 

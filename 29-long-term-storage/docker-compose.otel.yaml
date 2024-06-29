@@ -3,7 +3,7 @@ version: "3.4"
 services:
   
   k6-tracing:
-    image: ghcr.io/grafana/xk6-client-tracing:v0.0.2
+    image: ghcr.io/grafana/xk6-client-tracing:v0.0.5
     container_name: k6-tracing
     environment:
       - ENDPOINT=otel-collector:4317
@@ -12,7 +12,7 @@ services:
       - otel-collector
 
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.86.0
+    image: otel/opentelemetry-collector-contrib:0.102.0
     container_name: otel-collector
     command:
       - "--config=/conf/config.yaml"
@@ -27,7 +27,7 @@ services:
       - tempo-2
 
   tempo-1:
-    image: grafana/tempo:2.2.3
+    image: grafana/tempo:2.5.0
     container_name: tempo-1
     command: 
       - "--target=all"
@@ -36,7 +36,7 @@ services:
       - "--auth.enabled=false"
 
   tempo-2:
-    image: grafana/tempo:2.2.3
+    image: grafana/tempo:2.5.0
     container_name: tempo-2
     command: 
       - "--target=all"
@@ -45,7 +45,7 @@ services:
       - "--auth.enabled=false"
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - "3000:3000"

@@ -24,7 +24,6 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true
   - uid: tempo
     orgId: 1
     name: Tempo
@@ -34,7 +33,6 @@ datasources:
     url: http://tempo
     isDefault: true
     readOnly: false
-    editable: true
     jsonData:
       httpMethod: GET
       serviceMap:

@@ -3,7 +3,8 @@ version: "3.4"
 services:
   
   fastapi:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"
@@ -14,11 +15,14 @@ services:
       PYROSCOPE_SERVER: http://pyroscope:4040
       ENABLE_PYROSCOPE: "true"
     volumes:
-      - ./app_fastapi/:/app
+      - ../app/fastapi/:/app
     command: "python main.py"
+    depends_on:
+      - pyroscope
 
   spring-boot:
-    build: ./app_springboot/
+    # build: ../app/springboot/
+    image: ghcr.io/blueswen/observability-ironman30-lab/springboot:latest
     container_name: spring-boot
     ports:
       - "8080:8080"
@@ -30,31 +34,29 @@ services:
     command: "java -javaagent:/pyroscope.jar -jar /app.jar"
 
   pyroscope:
-    image: grafana/pyroscope:1.0.0
+    image: grafana/pyroscope:1.6.1
     container_name: pyroscope
     ports:
       - "4040:4040"
 
-  agent:
-    image: 'grafana/agent:v0.36.2'
-    container_name: agent
+  alloy:
+    image: grafana/alloy:v1.2.0
+    container_name: alloy
     user: root
     privileged: true
     pid: 'host'
-    environment:
-      - AGENT_MODE=flow
-    volumes:
-      - ./etc/config.river:/config.river
     ports:
       - '12345:12345'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./etc/config.alloy:/etc/alloy/config.alloy
     command:
-      - 'run'
-      - '/config.river'
-      - '--storage.path=/tmp/agent'
-      - '--server.http.listen-addr=0.0.0.0:12345'
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy/config.alloy
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - "3000:3000"

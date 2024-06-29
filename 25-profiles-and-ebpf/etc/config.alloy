@@ -1,0 +1,24 @@
+discovery.docker "contianes" {
+  host = "unix:///var/run/docker.sock"
+}
+
+discovery.relabel "local_containers" {
+  targets = discovery.docker.contianes.targets
+  rule {
+    action = "replace"
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label = "service_name"
+    replacement = "ebpf-$1"
+  }
+}
+
+pyroscope.write "endpoint" {
+  endpoint {
+    url = "http://pyroscope:4040"
+  }
+}
+
+pyroscope.ebpf "default" {
+  forward_to   = [ pyroscope.write.endpoint.receiver ]
+  targets      = discovery.relabel.local_containers.output
+}

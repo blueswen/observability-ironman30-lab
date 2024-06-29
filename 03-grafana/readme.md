@@ -20,10 +20,10 @@
 ## Goals
 
 1. 建立 Grafana
-   1. 將資料 Mount 至本機，確保資料不會因 Container 關閉而遺失
-   2. 使用 Provisioning 的方式建立 Data Source、Dashboard
-   3. 視覺化呈現 Prometheus Data Source 的資料於 Dashboard
-   4. 透過 `grafan.ini` 啟用 metrics，以 Prometheus Metrics 的提供方式提供 Grafana Metrics（[http://localhost:3000/metrics](http://localhost:3000/metrics)）
+2. 將 Grafana 的資料掛載（Mount）至本機，確保資料不會因 Container 關閉而遺失
+3. 使用 Provisioning 的方式建立 Data Source、Dashboard
+4. 視覺化呈現 Prometheus Data Source 的資料於 Dashboard
+5. 透過 `grafan.ini` 啟用 Grafana 本身的 metrics 功能，以 Prometheus Metrics 的格式Grafana 自身的 Metrics，揭露於 [http://localhost:3000/metrics](http://localhost:3000/metrics)
 
 ## Tasks
 

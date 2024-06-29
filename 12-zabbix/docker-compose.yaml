@@ -57,7 +57,7 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     volumes:
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
@@ -67,7 +67,8 @@ services:
       - "3000:3000"
 
   fastapi:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"

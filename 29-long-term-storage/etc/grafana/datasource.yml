@@ -25,7 +25,6 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true
   - uid: tempo
     orgId: 1
     name: Tempo
@@ -34,7 +33,26 @@ datasources:
     access: proxy
     url: http://tempo
     readOnly: false
-    editable: true
+    jsonData:
+      httpMethod: GET
+      serviceMap:
+        datasourceUid: 'mimir'
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      lokiSearch:
+        datasourceUid: loki
+      tracesToLogsV2:
+        customQuery: false
+        datasourceUid: loki
+        filterBySpanID: false
+        filterByTraceID: true
+        spanEndTimeShift: 3m
+        spanStartTimeShift: '-3m'
+        tags:
+          - key: compose_service
+            value: service_name
   - uid: loki
     orgId: 1
     name: Loki
@@ -42,3 +60,9 @@ datasources:
     typeName: Loki
     access: proxy
     url: http://loki:3100
+    jsonData:
+      derivedFields:
+        - datasourceUid: tempo
+          matcherRegex: (?:trace_id)=(\w+)
+          name: TraceID
+          url: $${__value.raw}

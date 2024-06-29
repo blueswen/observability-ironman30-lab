@@ -50,7 +50,9 @@
         docker-compose ps
         ```
 
-   2. Jaeger UI: [http://localhost:16686](http://localhost:16686)
+   2. Redpanda Console: [http://localhost:8080](http://localhost:8080)
+      1. 選擇 Topics，再點選 jaeger-spans，即可看到 Jaeger Collector 發送的 encode 過後的 Trace Data
+   3. Jaeger UI: [http://localhost:16686](http://localhost:16686)
       1. 選擇 Service 後點選 Find Traces，即可看到 [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing/tree/main) 自動發送的 Trace Data
 
 3. 關閉所有服務
@@ -88,7 +90,8 @@
 2. 建立 Kafka Components
    1. Kafka: 接收 Jaeger Collector 發送的 Trace Data，供 Jaeger Ingester 讀取
    2. Zookeeper: Kafka 的依賴
-3. 建立 [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing/tree/main)，Container 啟動後會自動產生 Traces 資料並發送至 Jaeger，模擬真實環境的 Traces 資料
+3. 建立 [Redpanda Console](https://github.com/redpanda-data/console) 檢視 Kafka 資訊
+4. 建立 [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing/tree/main)，Container 啟動後會自動產生 Traces 資料並發送至 Jaeger，模擬真實環境的 Traces 資料
 
 ## 參考資料
 

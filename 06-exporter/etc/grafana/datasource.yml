@@ -25,4 +25,3 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true

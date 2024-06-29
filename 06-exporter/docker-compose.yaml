@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   prometheus:
-    image: prom/prometheus:v2.46.0
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     ports:
       - 9090:9090
@@ -13,13 +13,13 @@ services:
       - --config.file=/workspace/prometheus.yml
 
   node-exporter:
-    image: prom/node-exporter:v1.6.1
+    image: prom/node-exporter:v1.8.1
     container_name: node-exporter
     ports:
       - 9100:9100
   
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:v0.47.2
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: cadvisor
     ports:
       - 8080:8080
@@ -31,7 +31,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000

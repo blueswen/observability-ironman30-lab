@@ -24,7 +24,6 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true
     isDefault: true
   - uid: tempo
     orgId: 1
@@ -34,6 +33,5 @@ datasources:
     access: proxy
     url: http://tempo
     readOnly: false
-    editable: true
     jsonData:
       httpMethod: GET

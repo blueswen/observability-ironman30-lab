@@ -3,7 +3,8 @@ version: "3.4"
 services:
   
   fastapi:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"
@@ -16,25 +17,30 @@ services:
     command: "python main.py"
 
   fastapi-beyla:
-    image: grafana/beyla:1.0.1
+    image: grafana/beyla:1.6.4
     container_name: fastapi-beyla
     pid: "service:fastapi"
     cap_add:
       - SYS_ADMIN
     # If using the above capability fails to instrument your service, remove it
     # and uncomment the line below
-    # privileged: true
+    privileged: true
     environment:
       BEYLA_PRINT_TRACES: true
       BEYLA_OPEN_PORT: 8000 # FastAPI App 的 port
       BEYLA_PROMETHEUS_PORT: 8080 # Prometheus Metrics 的 port
       BEYLA_SERVICE_NAME: fastapi
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      BEYLA_CONFIG_PATH: /config.yml
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4317
     ports:
       - "8081:8080"
+    volumes:
+      - /sys/kernel/security:/sys/kernel/security
+      - ./etc/config.yml:/config.yml
 
   spring-boot:
-    build: ./app_springboot/
+    # build: ../app/springboot/
+    image: ghcr.io/blueswen/observability-ironman30-lab/springboot:latest
     container_name: spring-boot
     ports:
       - "8080:8080"
@@ -44,25 +50,29 @@ services:
     command: "java -jar /app.jar"
 
   spring-boot-beyla:
-    image: grafana/beyla:latest
+    image: grafana/beyla:1.6.4
     container_name: spring-boot-beyla
     pid: "service:spring-boot"
     cap_add:
       - SYS_ADMIN
     # If using the above capability fails to instrument your service, remove it
     # and uncomment the line below
-    # privileged: true
+    privileged: true
     environment:
       BEYLA_PRINT_TRACES: true
       BEYLA_OPEN_PORT: 8080 # Spring Boot App 的 port
       BEYLA_PROMETHEUS_PORT: 8080 # Prometheus Metrics 的 port
       BEYLA_SERVICE_NAME: spring-boot
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      BEYLA_CONFIG_PATH: /config.yml
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://tempo:4317
     ports:
       - "8082:8080"
+    volumes:
+      - /sys/kernel/security:/sys/kernel/security
+      - ./etc/config.yml:/config.yml
 
   tempo:
-    image: grafana/tempo:2.2.3
+    image: grafana/tempo:2.5.0
     container_name: tempo
     command: 
       - "--target=all"
@@ -71,7 +81,7 @@ services:
       - "--auth.enabled=false"
 
   prometheus:
-    image: prom/prometheus:v2.28.1
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     command:
       - "--enable-feature=remote-write-receiver"
@@ -82,7 +92,7 @@ services:
       - ./etc/prometheus/:/etc/prometheus/
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - "3000:3000"

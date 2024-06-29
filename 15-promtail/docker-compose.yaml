@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   nginx:
-    image: nginxdemos/hello:0.3
+    image: nginxdemos/hello:0.4
     container_name: nginx
     ports:
       - "8080:80"
@@ -11,7 +11,7 @@ services:
       - logging=promtail
 
   promtail:
-    image:  grafana/promtail:2.9.0
+    image:  grafana/promtail:3.0.0
     container_name: promtail
     ports:
       - "9080:9080"
@@ -24,7 +24,7 @@ services:
     command: -config.file=/etc/promtail/docker-config.yaml
     
   loki:
-    image: grafana/loki:2.9.0
+    image: grafana/loki:3.0.0
     container_name: loki
     ports:
       - "3100:3100"
@@ -33,7 +33,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
 
   prometheus:
-    image: prom/prometheus:v2.46.0
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     ports:
       - 9090:9090
@@ -45,7 +45,7 @@ services:
       - --config.file=/workspace/prometheus.yml
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000

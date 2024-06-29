@@ -9,7 +9,7 @@ version: "3.7"
 services:
 
   nginx:
-    image: nginxdemos/hello:0.3
+    image: nginxdemos/hello:0.4
     container_name: nginx
     ports:
       - "8080:80"
@@ -20,7 +20,7 @@ services:
     logging: *default-logging
 
   fluent-bit:
-    image: fluent/fluent-bit:2.1.10
+    image: fluent/fluent-bit:3.0.6
     container_name: fluent-bit
     ports:
       - "2021:2021"
@@ -31,7 +31,7 @@ services:
       - vivo
 
   vivo:
-    image: calyptia/vivo:3.1.0
+    image: calyptia/vivo:3.2.0
     container_name: vivo
     ports:
       - "2025:2025"

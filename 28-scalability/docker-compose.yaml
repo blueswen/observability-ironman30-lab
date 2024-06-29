@@ -3,7 +3,8 @@ version: "3.7"
 services:
 
   fastapi:
-    build: ./fastapi_app_plain/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: fastapi
     ports:
       - "8000:8000"
@@ -11,7 +12,7 @@ services:
       - logging=promtail
 
   nginx:
-    image: nginxdemos/hello:0.3
+    image: nginxdemos/hello:0.4
     container_name: nginx
     ports:
       - "8080:80"
@@ -19,11 +20,11 @@ services:
       - logging=promtail
 
   loki-read:
-    image: grafana/loki:2.9.1
+    image: grafana/loki:3.0.0
     container_name: loki-read
     volumes:
       - ./etc/loki/config.yaml:/etc/loki/config.yaml
-    command: "-config.file=/etc/loki/config.yaml -target=read"
+    command: "-config.file=/etc/loki/config.yaml -target=read -query-scheduler.use-scheduler-ring=false"
     ports:
       - 3101:3100
       - 7946
@@ -39,7 +40,7 @@ services:
       - minio
   
   loki-write:
-    image: grafana/loki:2.9.1
+    image: grafana/loki:3.0.0
     container_name: loki-write
     volumes:
       - ./etc/loki/config.yaml:/etc/loki/config.yaml
@@ -72,7 +73,7 @@ services:
       - logging=promtail
 
   minio:
-    image: minio/minio:RELEASE.2023-10-07T15-07-38Z
+    image: minio/minio:RELEASE.2024-06-28T09-06-49Z
     container_name: minio
     entrypoint:
       - sh
@@ -100,7 +101,7 @@ services:
       retries: 5
 
   promtail:
-    image:  grafana/promtail:2.9.1
+    image:  grafana/promtail:3.0.0
     container_name: promtail
     ports:
       - "9080:9080"
@@ -113,7 +114,7 @@ services:
     command: -config.file=/etc/promtail/docker-config.yaml
 
   prometheus:
-    image: prom/prometheus:v2.28.1
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     command:
       - "--enable-feature=exemplar-storage"
@@ -126,7 +127,7 @@ services:
       - ./etc/prometheus:/workspace
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000

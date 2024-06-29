@@ -28,7 +28,6 @@ datasources:
           name: trace_id
       httpMethod: POST
     readOnly: false
-    editable: true
   - uid: graphite
     orgId: 1
     name: Graphite
@@ -42,4 +41,3 @@ datasources:
     basicAuth: false
     isDefault: false
     readOnly: false
-    editable: true

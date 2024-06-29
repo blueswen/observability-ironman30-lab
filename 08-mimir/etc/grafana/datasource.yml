@@ -28,4 +28,3 @@ datasources:
           name: trace_id
       httpMethod: POST
     readOnly: false
-    editable: true

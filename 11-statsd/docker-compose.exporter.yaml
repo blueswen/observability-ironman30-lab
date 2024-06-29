@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - 3000:3000
@@ -13,7 +13,7 @@ services:
       - ./etc/grafana/dashboards:/etc/grafana/dashboards
 
   prometheus:
-    image: prom/prometheus:v2.46.0
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     ports:
       - 9090:9090
@@ -23,14 +23,15 @@ services:
       - --config.file=/workspace/prometheus.yml
 
   statsd-exporter:
-    image: prom/statsd-exporter:v0.24.0
+    image: prom/statsd-exporter:v0.26.1
     container_name: statsd-exporter
     ports:
       - "9125:9125"
       - "9102:9102"
 
   flask-datadog:
-    build: ./flask_datadog/
+    # build: ../app/flask-datadog/
+    image: ghcr.io/blueswen/observability-ironman30-lab/flask-datadog:latest
     container_name: flask
     environment:
       - STATSD_HOST=statsd-exporter

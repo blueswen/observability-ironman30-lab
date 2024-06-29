@@ -3,7 +3,8 @@ version: "3.4"
 services:
   
   app-a:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-a
     ports:
       - "8000:8000"
@@ -17,7 +18,8 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-b:
-    build: ./app_fastapi/
+    # build: ../app/fastapi/
+    image: ghcr.io/blueswen/observability-ironman30-lab/fastapi:latest
     container_name: app-b
     ports:
       - "8001:8000"
@@ -31,7 +33,8 @@ services:
     command: "opentelemetry-instrument python main.py"
 
   app-c:
-    build: ./app_springboot/
+    # build: ../app/springboot/
+    image: ghcr.io/blueswen/observability-ironman30-lab/springboot:latest
     container_name: app-c
     ports:
       - "8002:8080"
@@ -44,7 +47,7 @@ services:
     command: "java -javaagent:/opentelemetry-javaagent.jar -jar /app.jar"
 
   tempo:
-    image: grafana/tempo:2.2.3
+    image: grafana/tempo:2.5.0
     container_name: tempo
     volumes:
       - ./etc/tempo/tempo.yaml:/etc/tempo/tempo.yaml
@@ -56,7 +59,7 @@ services:
       - "--config.file=/etc/tempo/tempo.yaml"
 
   prometheus:
-    image: prom/prometheus:v2.28.1
+    image: prom/prometheus:v2.53.0
     container_name: prometheus
     command:
       - "--enable-feature=remote-write-receiver"
@@ -67,7 +70,7 @@ services:
       - ./etc/prometheus/:/etc/prometheus/
 
   grafana:
-    image: grafana/grafana:10.1.0
+    image: grafana/grafana:11.1.0
     container_name: grafana
     ports:
       - "3000:3000"

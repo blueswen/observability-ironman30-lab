@@ -18,7 +18,6 @@ datasources:
     url: "http://pyroscope:4040"
     isDefault: true
     readOnly: false
-    editable: true
   - uid: tempo
     orgId: 1
     name: Tempo
@@ -43,4 +42,3 @@ datasources:
     jsonData:
       httpMethod: POST
     readOnly: false
-    editable: true

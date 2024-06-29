@@ -28,7 +28,6 @@ datasources:
           name: trace_id
       httpMethod: POST
     readOnly: false
-    editable: true
   - uid: tempo
     orgId: 1
     name: Tempo
@@ -37,7 +36,6 @@ datasources:
     access: proxy
     url: http://tempo
     readOnly: false
-    editable: true
     jsonData:
       httpMethod: GET
       serviceMap:

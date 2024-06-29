@@ -20,7 +20,6 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 19419,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -62,6 +61,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -69,9 +69,11 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -84,9 +86,40 @@
           "legendFormat": "{{label_name}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(duration_milliseconds_count{span_kind=\"SPAN_KIND_SERVER\", service_name=\"$app\", http_route=~\"$route\"}) by(service_name)",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "B"
         }
       ],
       "title": "Total Request",
+      "transformations": [
+        {
+          "id": "seriesToRows",
+          "options": {}
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Time"
+              }
+            ]
+          }
+        }
+      ],
       "type": "stat"
     },
     {
@@ -125,6 +158,7 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -132,9 +166,11 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -194,9 +230,95 @@
           "legendFormat": "Http Status 5XX",
           "range": true,
           "refId": "5XX"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(duration_milliseconds_count{service_name=\"$app\", span_kind=\"SPAN_KIND_SERVER\", http_status_code=~\"^2.*\", http_route=~\"$route\"}) by(http_status_code)",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Http Status 2XX",
+          "range": false,
+          "refId": "2XX-instant"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(duration_milliseconds_count{service_name=\"$app\", span_kind=\"SPAN_KIND_SERVER\", http_status_code=~\"^3.*\", http_route=~\"$route\"}) by(http_status_code)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Http Status 3XX",
+          "range": true,
+          "refId": "3XX-instant"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(duration_milliseconds_count{service_name=\"$app\", span_kind=\"SPAN_KIND_SERVER\", http_status_code=~\"^4.*\", http_route=~\"$route\"}) by(http_status_code)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Http Status 4XX",
+          "range": true,
+          "refId": "4XX-instant"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(duration_milliseconds_count{service_name=\"$app\", span_kind=\"SPAN_KIND_SERVER\", http_status_code=~\"^5.*\", http_route=~\"$route\"}) by(http_status_code)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Http Status 5XX",
+          "range": true,
+          "refId": "5XX-instant"
         }
       ],
       "title": "Requests Count",
+      "transformations": [
+        {
+          "id": "seriesToRows",
+          "options": {}
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "field": "Time"
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Metric"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
       "type": "stat"
     },
     {
@@ -377,6 +499,8 @@
       },
       "id": 8,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -386,9 +510,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -443,6 +568,8 @@
       },
       "id": 9,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -452,9 +579,10 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "sizing": "auto"
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -483,6 +611,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -581,6 +710,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -703,8 +833,10 @@
       "id": 6,
       "options": {
         "displayMode": "lcd",
+        "maxVizHeight": 300,
         "minVizHeight": 10,
         "minVizWidth": 0,
+        "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
@@ -714,9 +846,10 @@
           "values": false
         },
         "showUnfilled": true,
+        "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -772,7 +905,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Request Rate Trend"
+              "options": "Request Rate"
             },
             "properties": [
               {
@@ -786,15 +919,7 @@
                 "value": {
                   "mode": "palette-classic"
                 }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Request Rate"
-            },
-            "properties": [
+              },
               {
                 "id": "unit",
                 "value": "reqpm"
@@ -804,19 +929,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "PR95 Latency"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "ms"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Error Rate Trend"
+              "options": "Error Rate"
             },
             "properties": [
               {
@@ -831,34 +944,23 @@
                 "value": {
                   "mode": "palette-classic"
                 }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Error Rate"
-            },
-            "properties": [
+              },
               {
                 "id": "unit",
                 "value": "percentunit"
-              },
-              {
-                "id": "noValue",
-                "value": "0%"
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "PR95 Latency Trend"
+              "options": "PR95"
             },
             "properties": [
               {
                 "id": "custom.cellOptions",
                 "value": {
+                  "hideValue": false,
                   "type": "sparkline"
                 }
               },
@@ -867,6 +969,10 @@
                 "value": {
                   "mode": "palette-classic"
                 }
+              },
+              {
+                "id": "unit",
+                "value": "ms"
               }
             ]
           }
@@ -893,7 +999,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.1.0",
+      "pluginVersion": "11.1.0",
       "targets": [
         {
           "datasource": {
@@ -907,20 +1013,6 @@
           "hide": false,
           "instant": false,
           "range": true,
-          "refId": "Request Rate Trend"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(rate(duration_milliseconds_count{service_name=\"$app\", http_route=~\"$route\", span_kind=\"SPAN_KIND_SERVER\"}[3m])*60) by(service_name, http_method, http_route)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "range": false,
           "refId": "Request Rate"
         },
         {
@@ -933,20 +1025,6 @@
           "hide": false,
           "instant": false,
           "range": true,
-          "refId": "PR95 Trend"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "histogram_quantile(0.95, sum(rate(duration_milliseconds_bucket{service_name=\"$app\", http_route=~\"$route\", span_kind=\"SPAN_KIND_SERVER\"}[3m])) by (le, service_name, http_method, http_route))",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "range": false,
           "refId": "PR95"
         },
         {
@@ -961,20 +1039,6 @@
           "hide": false,
           "instant": false,
           "range": true,
-          "refId": "Error Rate Trend"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "sum(duration_milliseconds_count{service_name=\"$app\", http_route=~\"$route\", span_kind=\"SPAN_KIND_SERVER\", http_status_code!~\"2.*|3.*\"}) by(service_name, http_method, http_route) / sum(duration_milliseconds_count{service_name=\"$app\", http_route=~\"$route\", span_kind=\"SPAN_KIND_SERVER\"}) by(service_name, http_method, http_route)",
-          "format": "table",
-          "hide": false,
-          "instant": true,
-          "range": false,
           "refId": "Error Rate"
         }
       ],
@@ -994,6 +1058,7 @@
             "excludeByName": {
               "Time": true
             },
+            "includeByName": {},
             "indexByName": {
               "Time": 0,
               "Trend #PR95 Trend": 7,
@@ -1007,7 +1072,9 @@
             },
             "renameByName": {
               "Trend": "Request Rate Trend",
+              "Trend #Error Rate": "Error Rate",
               "Trend #Error Rate Trend": "Error Rate Trend",
+              "Trend #PR95": "PR95",
               "Trend #PR95 Trend": "PR95 Latency Trend",
               "Trend #Request Rate": "Request Rate",
               "Trend #Request Rate Trend": "Request Rate Trend",
@@ -1028,17 +1095,12 @@
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 38,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
-        "current": {
-          "selected": false,
-          "text": "fastapi",
-          "value": "fastapi"
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
@@ -1061,15 +1123,7 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
           "type": "prometheus",
           "uid": "prometheus"
@@ -1094,13 +1148,13 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "OpenTelemetry APM",
   "uid": "opentelemetry-apm",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }
