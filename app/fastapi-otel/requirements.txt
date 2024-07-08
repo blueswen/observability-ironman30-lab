@@ -1,5 +1,5 @@
 httpx==0.24.1
-fastapi==0.103.1
+fastapi==0.111.0
 uvicorn==0.23.2
 prometheus-client==0.20.0
 opentelemetry-distro==0.46b0
