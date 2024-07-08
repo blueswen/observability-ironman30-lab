@@ -1,0 +1,75 @@
+version: "3.4"
+
+services:
+
+  backend:
+    # build: ../app/todo-app/backend
+    image: ghcr.io/blueswen/observability-ironman30-lab/todo-app/backend:latest
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://tempo:4317
+      - OTEL_SERVICE_NAME=back-end
+      - OTEL_METRICS_EXPORTER=none
+    command: "opentelemetry-instrument python main.py"
+
+  frontend-jquery:
+    # build: ../app/todo-app/jquery-app
+    image: ghcr.io/blueswen/observability-ironman30-lab/todo-app/jquery-app:latest
+    container_name: frontend-jquery
+    ports:
+      - "80:80"
+  
+  frontend-vue:
+    # build: ../app/todo-app/vue-app
+    image: ghcr.io/blueswen/observability-ironman30-lab/todo-app/vue-app:latest
+    container_name: frontend-vue
+    ports:
+      - "8080:80"
+
+  alloy:
+    image: grafana/alloy:v1.2.0
+    container_name: alloy
+    ports:
+      - "12345:12345"
+      - "12347:12347"
+      - "6832:6832"
+      - "55679:55679"
+      - "9091:9091"
+    volumes:
+      - ./etc/config.alloy:/etc/alloy/config.alloy
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/alloy/config.alloy
+
+  tempo:
+    image: grafana/tempo:2.5.0
+    container_name: tempo
+    ports:
+      - 4317:4317
+    command: 
+      - "--target=all"
+      - "--storage.trace.backend=local"
+      - "--storage.trace.local.path=/var/tempo"
+      - "--auth.enabled=false"
+
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_FEATURE_TOGGLES_ENABLE: "tempoServiceGraph,traceToMetrics"
+    volumes:
+      - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards

@@ -1,0 +1,29 @@
+loki.write "loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "http://tempo:4317"
+    tls {
+      insecure = true
+      insecure_skip_verify = true
+    }
+  }
+}
+
+faro.receiver "faro" {
+    server {
+      listen_address = "0.0.0.0"
+      cors_allowed_origins = ["*"]
+    }
+    extra_log_labels = {
+        service = "frontend-app",
+    }
+    output {
+        logs   = [loki.write.loki.receiver]
+        traces = [otelcol.exporter.otlp.tempo.input]
+    }
+}
