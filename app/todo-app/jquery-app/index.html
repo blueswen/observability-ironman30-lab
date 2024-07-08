@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script>
+    (function() {
+      var webSdkScript = document.createElement("script");
+
+      webSdkScript.src =
+        "https://unpkg.com/@grafana/faro-web-sdk@1.8.1/dist/bundle/faro-web-sdk.iife.js";
+
+      webSdkScript.onload = () => {
+        window.GrafanaFaroWebSdk.initializeFaro({
+          url: "http://localhost:12347/collect",
+          app: {
+            name: 'jquery-app',
+            version: '1.0.0',
+          },
+        });
+
+        var webTracingScript = document.createElement("script");
+
+        webTracingScript.src =
+          "https://unpkg.com/@grafana/faro-web-tracing@1.8.1/dist/bundle/faro-web-tracing.iife.js";
+
+        webTracingScript.onload = () => {
+          window.GrafanaFaroWebSdk.faro.instrumentations.add(
+            new window.GrafanaFaroWebTracing.TracingInstrumentation({
+              instrumentationOptions: {
+                propagateTraceHeaderCorsUrls: [new RegExp('.*')],
+              },
+            })
+          );
+        };
+        document.head.appendChild(webTracingScript);
+      };
+
+      document.head.appendChild(webSdkScript);
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h1>Todo List</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <form>
+          <div class="mb-3">
+            <label for="input-title" class="form-label">Title</label>
+            <input class="form-control" id="input-title">
+          </div>
+          <div class="mb-3">
+            <label for="input-description" class="form-label">Description</label>
+            <input class="form-control" id="input-description">
+          </div>
+          <div class="text-center mt-3">
+            <button id="btn-add-todo" class="btn btn-primary mx-2">Add Todo</button>
+            <button id="btn-trigger-backend-error" class="btn btn-danger mx-2">Trigger Backend Error</button>
+            <button id="btn-tirgger-frontend-error" class="btn btn-warning mx-2">Trigger Frontend Error</button>
+            <button id="btn-console-log" class="btn btn-info mx-2">Console Log</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row" id="loading">
+      <div class="col text-center">
+        <div class="spinner-border my-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="items">
+
+    </div>
+  </div>
+
+  <script>
+    function renderTodos(todos) {
+      const items = $("#items");
+      items.empty();
+      todos.forEach(todo => {
+        const card = `
+        <div class="col-lg-3 col-md-6">
+          <div class="card my-3">
+            <div class="card-body">
+              <h5 class="card-title">${todo.title}</h5>
+              <h6>
+                <span class="badge bg-${todo.completed ? 'success' : 'warning'}">${todo.completed ? 'Completed' : 'Pending'}</span>
+              </h6>
+              <p class="card-text">${todo.description}</p>
+              <div class="text-center">` +
+                (todo.completed ? `<button class="btn btn-warning mx-2" onclick="undoCompleteTodo(${todo.id})">Pending</button>` : `<button class="btn btn-success mx-2" onclick="completeTodo(${todo.id})">Complete</button>`) +
+                `<button class="btn btn-danger mx-2" onclick="deleteTodo(${todo.id})">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+        items.append(card);
+      });
+    }
+
+    function fetchTodos() {
+      $("#loading").show();
+      $.ajax({
+        url: 'http://localhost:8000/todos/',
+        type: 'GET',
+        success: function(data) {
+          renderTodos(data);
+        }
+      }).always(function() {
+        $("#loading").hide();
+      });
+    }
+
+    $(window).on('load', function() {
+      fetchTodos();
+    });
+
+    $("#btn-add-todo").click(function(e) {
+      e.preventDefault();
+      const title = $("#input-title").val();
+      const description = $("#input-description").val();
+      $.ajax({
+        url: 'http://localhost:8000/todos/',
+        type: 'POST',
+        data: JSON.stringify({
+          title: title,
+          description: description,
+        }),
+        contentType: 'application/json',
+        success: function(data) {
+          console.log(data);
+          $("#input-title").val('');
+          $("#input-description").val('');
+          fetchTodos();
+        }
+      });
+    });
+
+    $("#btn-trigger-backend-error").click(function(e) {
+      e.preventDefault();
+      $.ajax({
+        url: 'http://localhost:8000/error',
+        type: 'GET',
+        success: function(data) {
+          console.log(data);
+        },
+        error: function(error) {
+          console.error('Backend Error:', error);
+          window.alert('Backend Error');
+        }
+      });
+    });
+
+    $("#btn-tirgger-frontend-error").click(function(e) {
+      e.preventDefault();
+      throw new Error('Triggered Error');
+    });
+
+    $("#btn-console-log").click(function(e) {
+      e.preventDefault();
+      const timestamp = new Date().toISOString();
+      console.log(`Console Log: ${timestamp}`);
+      console.error(`Console Error: ${timestamp}`);
+    });
+
+    function completeTodo(id) {
+      $.ajax({
+        url: `http://localhost:8000/todos/${id}`,
+        type: 'PUT',
+        data: JSON.stringify({
+          completed: true,
+        }),
+        contentType: 'application/json',
+        success: function(data) {
+          console.log(data);
+          fetchTodos();
+        }
+      });
+    }
+
+    function undoCompleteTodo(id) {
+      $.ajax({
+        url: `http://localhost:8000/todos/${id}`,
+        type: 'PUT',
+        data: JSON.stringify({
+          completed: false,
+        }),
+        contentType: 'application/json',
+        success: function(data) {
+          console.log(data);
+          fetchTodos();
+        }
+      });
+    }
+
+    function deleteTodo(id) {
+      $.ajax({
+        url: `http://localhost:8000/todos/${id}`,
+        type: 'DELETE',
+        success: function(data) {
+          console.log(data);
+          fetchTodos();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
