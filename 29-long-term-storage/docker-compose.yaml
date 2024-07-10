@@ -8,8 +8,6 @@ services:
     container_name: app-a
     ports:
       - "8000:8000"
-    volumes:
-      - ./app_fastapi/:/app
     environment:
       APP_NAME: "app-a"
       TARGET_ONE_SVC: "app-b:8000"

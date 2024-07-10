@@ -12,8 +12,6 @@ services:
       TARGET_ONE_SVC: "fastapi:8000"
       TARGET_TWO_SVC: "spring-boot:8080"
       APP_NAME: fastapi
-    volumes:
-      - ./app_fastapi/:/app
     command: "python main.py"
 
   fastapi-beyla:
