@@ -50,8 +50,11 @@ services:
     container_name: redpanda-console
     ports:
       - 8080:8080
-    environment:
-      - KAFKA_BROKERS=kafka:9092
+    environment:        
+      CONFIG_FILEPATH: /tmp/config.yml
+    volumes:
+      - ./etc/console.yaml:/tmp/config.yml
+      - ./etc/protos:/etc/protos
 
   jaeger-collector:
     image: jaegertracing/jaeger-collector:1.58.1

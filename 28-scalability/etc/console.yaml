@@ -1,0 +1,11 @@
+kafka:
+  brokers: ["kafka:9092"]
+  protobuf:
+    enabled: true
+    mappings:
+      - topicName: jaeger-spans
+        valueProtoType: jaeger.api_v2.Span
+    fileSystem:
+      enabled: true
+      paths:
+        - /etc/protos
