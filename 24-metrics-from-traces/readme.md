@@ -65,8 +65,8 @@
 
 ### Basic
 
-1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
-2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
 3. 建立 OpenTelemetry Collector
    1. 接收 Traces 資料，將 Traces 資料轉送至 Tempo 並透過 Span Metrics Connector 產生 Metrics
    2. 接收 Span Metrics Connector 產生的 Metrics 資料，並揭露於自己的 8889 Port 供 Prometheus 爬取
@@ -76,8 +76,8 @@
 
 ### Jaeger SPM
 
-1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
-2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
 3. 建立 OpenTelemetry Collector
    1. 接收 Traces 資料，將 Traces 資料轉送至 Tempo 並透過 Span Metrics Connector 產生 Metrics
    2. 接收 Span Metrics Connector 產生的 Metrics 資料，並揭露於自己的 8889 Port 供 Prometheus 爬取

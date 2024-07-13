@@ -68,8 +68,8 @@
 ### Grafana Alloy
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
-   2. 透過 OpenTelemetry Manual Instrumentation，將 Trace id 加入 Log 中，輸出於 console
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
+   2. 透過 OpenTelemetry Code-based Instrumentation，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
 2. 建立 Grafana Alloy
    1. 爬取 Prometheus Metrics 後 Remote Write 至 Prometheus
@@ -83,8 +83,8 @@
 ### Grafana Cloud
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
-   2. 透過 OpenTelemetry Manual Instrumentation，將 Trace id 加入 Log 中，輸出於 console
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
+   2. 透過 OpenTelemetry Code-based Instrumentation，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
 2. 建立 Grafana Alloy
    1. 爬取 Prometheus Metrics 後 Remote Write 至 Grafana Cloud Prometheus

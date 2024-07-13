@@ -40,12 +40,12 @@
 ## Goals
 
 1. 建立 FastAPI App（app-a、app-b）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Tempo
-   2. 透過 OpenTelemetry Manual Instrumentation，將 Trace id 加入 Log 中，輸出於 console
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Tempo
+   2. 透過 OpenTelemetry Code-based Instrumentation，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
 2. 建立 Spring Boot App（app-c）
-   1. 透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 Tempo
-   2. 透過 OpenTelemetry Automatic Instrumentation 與 Logback，將 Trace id 加入 Log 中，輸出於 console
+   1. 透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
+   2. 透過 OpenTelemetry Zero-code Instrumentation 與 Logback，將 Trace id 加入 Log 中，輸出於 console
    3. 透過 Spring Boot Actuator 與 Micrometer，產生 OpenMetrics 格式的 Metrics，揭露於 `/actuator/prometheus` endpoint
 3. 建立 Tempo，接收 Traces 資料
 4. 建立 Loki，搭配 Loki Docker Driver 收集 Container Log

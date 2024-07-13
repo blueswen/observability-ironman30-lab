@@ -27,10 +27,10 @@
 ## Goals
 
 1. 建立 Frontend App，透過 Faro Web SDK 產生與收集 Web Vital 指標、Console Log、Errors、Session、View、Performance、Tracing 等資訊，並發送至 Grafana Alloy
-2. 建立 Backend App，透過 OpenTelemetry Automatic Instrumentation 產生 Traces，並發送至 Tempo
+2. 建立 Backend App，透過 OpenTelemetry Zero-code Instrumentation 產生 Traces，並發送至 Tempo
 3. 建立 Grafana Alloy 用於接收 Faro Web SDK 產生的資料，並轉送至 Loki 與 Tempo
 4. 建立 Loki 用於收集 Grafana Alloy 傳送的 Log 資料
-5. 建立 Tempo 用於收集 Grafana Alloy 與 OpenTelemetry Automatic Instrumentation 傳送的 Trace 資料
+5. 建立 Tempo 用於收集 Grafana Alloy 與 OpenTelemetry Zero-code Instrumentation 傳送的 Trace 資料
 6. 建立 Grafana 用於查詢 Loki 與 Tempo 的資料
 
 ## 參考資料

@@ -30,8 +30,8 @@
 
 ## Goals
 
-1. 建立 FastAPI App（app-a、app-b），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 Tempo
-2. 建立 Spring Boot App（app-c），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 Tempo
+1. 建立 FastAPI App（app-a、app-b），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
+2. 建立 Spring Boot App（app-c），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
 3. 建立 Tempo，接收 Traces 資料
 4. 建立 Grafana，查詢 Tempo 顯示 Traces 資料
 

@@ -36,7 +36,7 @@
 
 ## Goals
 
-1. 建立 FastAPI App（app-a、app-b、app-c），透過 OpenTelemetry Automatic Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+1. 建立 FastAPI App（app-a、app-b、app-c），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
 2. 建立 OpenTelemetry Collector
    1. 接收 Traces 資料，經過處理後發送至 Tempo
    2. 揭露 OpenTelemetry Collector 的 Metrics 在 8888 port，供 Prometheus 收集

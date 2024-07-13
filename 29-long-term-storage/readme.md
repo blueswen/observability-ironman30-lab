@@ -53,7 +53,7 @@
 ### Loki Tempo Mimir with MinIO
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Manual Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
    2. 透過 Prometheus Client 產生 Metrics，揭露於 `/metrics` endpoint
 2. 建立 Grafana Agent
    1. 爬取 Prometheus Metrics 後 Remote Write 至 Mimir
