@@ -20,9 +20,8 @@ services:
     pid: "service:fastapi"
     cap_add:
       - SYS_ADMIN
-    # If using the above capability fails to instrument your service, remove it
-    # and uncomment the line below
-    privileged: true
+    # If using the above capability fails to instrument your service, remove it and uncomment the line below
+    # privileged: true
     environment:
       BEYLA_PRINT_TRACES: true
       BEYLA_OPEN_PORT: 8000 # FastAPI App 的 port
@@ -53,9 +52,8 @@ services:
     pid: "service:spring-boot"
     cap_add:
       - SYS_ADMIN
-    # If using the above capability fails to instrument your service, remove it
-    # and uncomment the line below
-    privileged: true
+    # If using the above capability fails to instrument your service, remove it and uncomment the line below
+    # privileged: true
     environment:
       BEYLA_PRINT_TRACES: true
       BEYLA_OPEN_PORT: 8080 # Spring Boot App 的 port
@@ -96,3 +94,5 @@ services:
       - "3000:3000"
     volumes:
       - ./etc/grafana/:/etc/grafana/provisioning/datasources
+      - ./etc/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./etc/grafana/dashboards:/etc/grafana/dashboards

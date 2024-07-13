@@ -70,6 +70,7 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
          2. 查詢語法輸入 `http_server_request_duration_seconds_count{job="spring-boot-beyla"}` 可以查詢 Spring Boot App 的 Metrics
       2. 點擊左上 Menu > Explore，左上 Data Source 選擇 `Tempo`
          1. Query Type：Search 可以查詢 Traces
+      3. 點擊左上 Menu > Dashboards，即可看到透過 Provisioning 建立的 Beyla RED Metrics Dashboard
 3. 關閉所有服務
 
     ```bash
@@ -98,3 +99,4 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
 
 1. [Grafana Pyroscope documentation](https://grafana.com/docs/pyroscope/latest/)
 2. [Grafana Alloy Pull Mode Integration](https://github.com/grafana/pyroscope/tree/main/examples/grafana-agent)
+3. [Beyla RED Metrics Dashboard](https://grafana.com/grafana/dashboards/19923-beyla-red-metrics/)
