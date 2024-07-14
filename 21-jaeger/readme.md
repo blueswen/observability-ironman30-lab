@@ -65,7 +65,7 @@ Jaeger Collector 會將 Trace Data 寫入 DB，Jaeger Query 則是從 DB 讀取 
    2. app-b: 透過 HTTP 發送 OTLP Trace Data 至 Jaeger Collector 的 4318 Port
    3. app-c: 透過 gRPC 發送 jaeger.thrift Trace Data 至 Jaeger Collector 的 14268 Port
    4. app-d: 透過 HTTP 發送 model.proto Trace Data 至 Jaeger Collector 的 14250 Port
-3. 建立 Grafana Dashboard 讀取 Jaeger Data Source 查看 Trace Data
+3. 建立 Grafana 讀取 Jaeger Data Source 查看 Trace Data
 
 ## 參考資料
 
