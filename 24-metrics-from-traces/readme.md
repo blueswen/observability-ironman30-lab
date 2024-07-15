@@ -1,8 +1,10 @@
 # Metrics From Traces
 
-## Quick Start
+## Basic
 
-### Basic
+![Architecture](./arch-basic.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -28,7 +30,22 @@
     docker-compose down
     ```
 
-### Jaeger SPM
+### Goals
+
+1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
+3. 建立 OpenTelemetry Collector
+   1. 接收 Traces 資料，將 Traces 資料轉送至 Tempo 並透過 Span Metrics Connector 產生 Metrics
+   2. 接收 Span Metrics Connector 產生的 Metrics 資料，並揭露於自己的 8889 Port 供 Prometheus 爬取
+4. 建立 Tempo，接收 OpenTelemetry Collector 發送的 Traces 資料
+5. 建立 Prometheus，爬取 OpenTelemetry Collector 的 Metrics 資料
+6. 建立 Grafana，查詢 Tempo 與 Prometheus 資料
+
+## Jaeger SPM
+
+![Architecture](./arch-jaeger.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -61,20 +78,7 @@
     docker-compose -f docker-compose.jaeger.yaml down
     ```
 
-## Goals
-
-### Basic
-
-1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
-2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
-3. 建立 OpenTelemetry Collector
-   1. 接收 Traces 資料，將 Traces 資料轉送至 Tempo 並透過 Span Metrics Connector 產生 Metrics
-   2. 接收 Span Metrics Connector 產生的 Metrics 資料，並揭露於自己的 8889 Port 供 Prometheus 爬取
-4. 建立 Tempo，接收 OpenTelemetry Collector 發送的 Traces 資料
-5. 建立 Prometheus，爬取 OpenTelemetry Collector 的 Metrics 資料
-6. 建立 Grafana，查詢 Tempo 與 Prometheus 資料
-
-### Jaeger SPM
+### Goals
 
 1. 建立 FastAPI App（fastapi），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector
 2. 建立 Spring Boot App（spring-boot），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 OpenTelemetry Collector

@@ -1,5 +1,7 @@
 # Loki
 
+![Architecture](./arch.png)
+
 ## Quick Start
 
 1. 安裝 [Loki Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/)

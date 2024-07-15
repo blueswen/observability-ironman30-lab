@@ -1,8 +1,10 @@
 # Long Term Storage
 
-## Quick Start
+## Loki Tempo Mimir with MinIO
 
-### Loki Tempo Mimir with MinIO
+![Architecture](./arch-grafana.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -31,7 +33,25 @@
     docker-compose down
     ```
 
-### OpenTelemetry Collector Filter
+### Goals
+
+1. 建立 FastAPI App（app-a、app-b、app-c）
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
+   2. 透過 Prometheus Client 產生 Metrics，揭露於 `/metrics` endpoint
+2. 建立 Grafana Agent
+   1. 爬取 Prometheus Metrics 後 Remote Write 至 Mimir
+   2. 爬取 Docker Container Log 後轉送至 Loki
+   3. 接收 OTEL 格式的 Trace 資料後轉發至 Tempo
+3. 建立 Tempo，接收 Traces 資料
+4. 建立 Loki，接收 Grafana Agent 收集的 Container Log
+5. 建立 Mimir，收集 Grafana Agent 收集的 Metrics
+6. 建立 Grafana，查詢 Tempo、Loki、Mimir 資料
+
+## OpenTelemetry Collector Filter
+
+![Architecture](./arch-otel.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -48,23 +68,7 @@
     docker-compose -f docker-compose.otel.yaml down
     ```
 
-## Goals
-
-### Loki Tempo Mimir with MinIO
-
-1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Agent
-   2. 透過 Prometheus Client 產生 Metrics，揭露於 `/metrics` endpoint
-2. 建立 Grafana Agent
-   1. 爬取 Prometheus Metrics 後 Remote Write 至 Mimir
-   2. 爬取 Docker Container Log 後轉送至 Loki
-   3. 接收 OTEL 格式的 Trace 資料後轉發至 Tempo
-3. 建立 Tempo，接收 Traces 資料
-4. 建立 Loki，接收 Grafana Agent 收集的 Container Log
-5. 建立 Mimir，收集 Grafana Agent 收集的 Metrics
-6. 建立 Grafana，查詢 Tempo、Loki、Mimir 資料
-
-### OpenTelemetry Collector Filter
+### Goals
 
 1. 建立 [xk6-client-tracing](https://github.com/grafana/xk6-client-tracing/tree/main)，Container 啟動後會自動產生 Traces 資料並發送至 OpenTelemetry Collector，模擬真實環境的 Traces 資料
 2. 建立 OpenTelemetry Collector，設定兩個 Pipeline，輸入相同，但處理方式和輸出不同

@@ -1,8 +1,10 @@
 # Grafana Alloy and Cloud
 
-## Quick Start
+## Grafana Alloy
 
-### Grafana Alloy
+![Architecture](./arch.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -31,7 +33,26 @@
     docker-compose down
     ```
 
-### Grafana Cloud
+### Goals
+
+1. 建立 FastAPI App（app-a、app-b、app-c）
+   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
+   2. 透過 OpenTelemetry Code-based Instrumentation，將 Trace id 加入 Log 中，輸出於 console
+   3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
+2. 建立 Grafana Alloy
+   1. 爬取 Prometheus Metrics 後 Remote Write 至 Prometheus
+   2. 爬取 Docker Container Log 後轉送至 Loki
+   3. 接收 OTEL 格式的 Trace 資料後轉發至 Tempo
+3. 建立 Tempo，接收 Traces 資料
+4. 建立 Loki，搭配 Loki Docker Driver 收集 Container Log
+5. 建立 Prometheus，啟用 Exemplar 功能，收集 app-a、app-b、app-c 的 Metrics
+6. 建立 Grafana，查詢 Tempo、Loki、Prometheus 資料
+
+## Grafana Cloud
+
+![Architecture](./arch-cloud.png)
+
+### Quick Start
 
 1. 註冊 [Grafana Cloud](https://grafana.com/auth/sign-up) 帳號
 2. 建立 API Key
@@ -63,24 +84,7 @@
     docker-compose -f docker-compose.cloud.yaml down
     ```
 
-## Goals
-
-### Grafana Alloy
-
-1. 建立 FastAPI App（app-a、app-b、app-c）
-   1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy
-   2. 透過 OpenTelemetry Code-based Instrumentation，將 Trace id 加入 Log 中，輸出於 console
-   3. 透過 Prometheus Client 產生 OpenMetrics 格式的 Metrics，揭露於 `/metrics` endpoint
-2. 建立 Grafana Alloy
-   1. 爬取 Prometheus Metrics 後 Remote Write 至 Prometheus
-   2. 爬取 Docker Container Log 後轉送至 Loki
-   3. 接收 OTEL 格式的 Trace 資料後轉發至 Tempo
-3. 建立 Tempo，接收 Traces 資料
-4. 建立 Loki，搭配 Loki Docker Driver 收集 Container Log
-5. 建立 Prometheus，啟用 Exemplar 功能，收集 app-a、app-b、app-c 的 Metrics
-6. 建立 Grafana，查詢 Tempo、Loki、Prometheus 資料
-
-### Grafana Cloud
+### Goals
 
 1. 建立 FastAPI App（app-a、app-b、app-c）
    1. 透過 OpenTelemetry Code-based Instrumentation 產生與收集 Traces，並發送至 Grafana Alloy

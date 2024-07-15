@@ -1,5 +1,7 @@
 # OpenTelemetry SDK
 
+![Architecture](./arch.png)
+
 ## Quick Start
 
 1. 啟動所有服務

@@ -1,8 +1,11 @@
 # Scalability
 
-## Quick Start
+## Loki Scalable Monolithic
 
-### Loki Scalable Monolithic
+![Loki Arch](./images/28-lab-loki-pipeline.png)
+藍色線為 Write，綠色線為 Read
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -35,7 +38,23 @@
     docker-compose down
     ```
 
-### Jaeger with Kafka
+### Goals
+
+1. 建立 FastAPI App 與 Nginx，模擬服務產生 Log
+2. 建立 Promtail，並 Mount Docker Socket 至 Promtail Container，讓 Promtail 可以讀取 Label 為 `logging=promtail` 的 Container 的 Log
+3. 建立 Loki
+   1. loki-gateway: Nginx proxy，根據 URL 將 Request 轉發至 loki-read 或 loki-write
+   2. loki-read: 負責查詢 Log，從 MinIO 讀取 Log
+   3. loki-write: 負責接收 Promtail 傳送的 Log，並寫入到 MinIO
+4. 建立 Minio，作為 Loki 的 Object Storage
+5. 建立 Prometheus，爬取 loki-read 與 loki-write 的 Metrics
+6. 建立 Grafana，讀取 Loki 的資料
+
+## Jaeger with Kafka
+
+![Jaeger Arch](./images/28-lab-jaeger-pipeline.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -61,26 +80,7 @@
     docker-compose -f docker-compose.jaeger.yaml down
     ```
 
-## Goals
-
-### Loki Scalable Monolithic
-
-![Loki Arch](./images/28-lab-loki-pipeline.png)
-藍色線為 Write，綠色線為 Read
-
-1. 建立 FastAPI App 與 Nginx，模擬服務產生 Log
-2. 建立 Promtail，並 Mount Docker Socket 至 Promtail Container，讓 Promtail 可以讀取 Label 為 `logging=promtail` 的 Container 的 Log
-3. 建立 Loki
-   1. loki-gateway: Nginx proxy，根據 URL 將 Request 轉發至 loki-read 或 loki-write
-   2. loki-read: 負責查詢 Log，從 MinIO 讀取 Log
-   3. loki-write: 負責接收 Promtail 傳送的 Log，並寫入到 MinIO
-4. 建立 Minio，作為 Loki 的 Object Storage
-5. 建立 Prometheus，爬取 loki-read 與 loki-write 的 Metrics
-6. 建立 Grafana，讀取 Loki 的資料
-
-### Jaeger with Kafka
-
-![Jaeger Arch](./images/28-lab-jaeger-pipeline.png)
+### Goals
 
 1. 建立 Jaeger Components
    1. Jaeger Collector: 接收 Application 發送的 Trace Data

@@ -1,8 +1,10 @@
 # Fluent Bit
 
-## Quick Start
+## Basic
 
-### Basic
+![Architecture](./arch-basic.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -21,8 +23,15 @@
     ```bash
     docker-compose down
     ```
+### Goals
 
-### Container Log with Loki
+1. 建立 Fluent Bit，使用 [Dummy](https://docs.fluentbit.io/manual/pipeline/inputs/dummy) 與 [Random](https://docs.fluentbit.io/manual/pipeline/inputs/random) Input，將資料送至 [Standard Output](https://docs.fluentbit.io/manual/pipeline/outputs/standard-output) 呈現
+
+## Container Log with Loki
+
+![Architecture](./arch-loki.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -47,7 +56,18 @@
     docker-compose down
     ```
 
-### Container Log with Vivo
+### Goals
+
+1. 建立 Fluent Bit，使用 [Forward](https://docs.fluentbit.io/manual/pipeline/inputs/forward) 作為 Input 搭配 [Fluentd Logging Driver](https://docs.docker.com/config/containers/logging/fluentd/) 接收 Container Log，使用 [Loki](https://docs.fluentbit.io/manual/pipeline/outputs/loki) 作為 Output 將資料送至 Loki
+2. 建立 Loki，負責收取 Fluent Bit 傳送的 Log
+3. 建立 Grafana，讀取 Loki 的資料
+4. 建立 Nginx，產生 Log
+
+## Container Log with Vivo
+
+![Architecture](./arch-vivo.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -66,20 +86,7 @@
     docker-compose -f docker-compose.vivo.yaml down
     ```
 
-## Goals
-
-### Basic
-
-1. 建立 Fluent Bit，使用 [Dummy](https://docs.fluentbit.io/manual/pipeline/inputs/dummy) 與 [Random](https://docs.fluentbit.io/manual/pipeline/inputs/random) Input，將資料送至 [Standard Output](https://docs.fluentbit.io/manual/pipeline/outputs/standard-output) 呈現
-
-### Container Log with Loki
-
-1. 建立 Fluent Bit，使用 [Forward](https://docs.fluentbit.io/manual/pipeline/inputs/forward) 作為 Input 搭配 [Fluentd Logging Driver](https://docs.docker.com/config/containers/logging/fluentd/) 接收 Container Log，使用 [Loki](https://docs.fluentbit.io/manual/pipeline/outputs/loki) 作為 Output 將資料送至 Loki
-2. 建立 Loki，負責收取 Fluent Bit 傳送的 Log
-3. 建立 Grafana，讀取 Loki 的資料
-4. 建立 Nginx，產生 Log
-
-### Container Log with Vivo
+### Goals
 
 1. 建立 Fluent Bit，使用 [Forward](https://docs.fluentbit.io/manual/pipeline/inputs/forward) 作為 Input 搭配 [Fluentd Logging Driver](https://docs.docker.com/config/containers/logging/fluentd/) 接收 Container Log，將資料透過 [Forward](https://docs.fluentbit.io/manual/pipeline/outputs/forward) 送至 [Vivo](https://github.com/calyptia/vivo)
 2. 建立 Vivo，負責收取 Fluent Bit 傳送的 Log

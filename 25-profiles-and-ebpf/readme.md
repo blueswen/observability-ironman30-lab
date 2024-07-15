@@ -1,8 +1,10 @@
 # Profiles and eBPF
 
-## Quick Start
+## Pyroscope
 
-### Pyroscope
+![Architecture](./arch-pyroscope.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -38,10 +40,22 @@
     docker-compose down
     ```
 
+### Goals
+
+1. 建立 FastAPI App（fastapi），透過 [Pyroscope Python SDK](https://github.com/grafana/pyroscope/tree/main) 收集 Profile 資料，並發送至 Pyroscope
+2. 建立 Spring Boot App（spring-boot），透過 [Agent Jar](https://grafana.com/docs/pyroscope/next/configure-client/language-sdks/java/#start-pyroscope-as-javaagent) 的方式使用 [Pyroscope Java SDK](https://github.com/grafana/pyroscope-java) 收集 Profile 資料，並發送至 Pyroscope
+3. 建立 [Grafana Alloy](https://github.com/grafana/alloy/)，透過 eBPF 收集 Container 的 Profile 資料，並發送至 Pyroscope
+4. 建立 Pyroscope，接收 Profile 資料，並提供 Web UI 查詢
+5. 建立 Grafana，查詢 Pyroscope 資料
+
 > [!WARNING]  
 > 目前(2024/06/29) Pyroscope 因相依的 py-spy 尚不支援 Python 3.12，後續追蹤請參考 [Unsupported version of Python: 3.12.0](https://github.com/grafana/pyroscope-rs/issues/168)。
 
 ### Beyla
+
+![Architecture](./arch-beyla.png)
+
+### Quick Start
 
 若使用 Docker Desktop 且非使用 WSL2（即使用 linuxkit），Docker Desktop 需更新至 `24.0.6` 版以上，才有支援 Beyla 需要的 BTF 功能（[Enabling BTF support in kernel image](https://github.com/linuxkit/linuxkit/issues/3755#issuecomment-1821702440)），否則會出現以下錯誤：
 
@@ -77,17 +91,7 @@ loading and assigning BPF objects: field KprobeSysExit: program kprobe_sys_exit:
     docker-compose -f docker-compose.beyla.yaml down
     ```
 
-## Goals
-
-### Pyroscope
-
-1. 建立 FastAPI App（fastapi），透過 [Pyroscope Python SDK](https://github.com/grafana/pyroscope/tree/main) 收集 Profile 資料，並發送至 Pyroscope
-2. 建立 Spring Boot App（spring-boot），透過 [Agent Jar](https://grafana.com/docs/pyroscope/next/configure-client/language-sdks/java/#start-pyroscope-as-javaagent) 的方式使用 [Pyroscope Java SDK](https://github.com/grafana/pyroscope-java) 收集 Profile 資料，並發送至 Pyroscope
-3. 建立 [Grafana Alloy](https://github.com/grafana/alloy/)，透過 eBPF 收集 Container 的 Profile 資料，並發送至 Pyroscope
-4. 建立 Pyroscope，接收 Profile 資料，並提供 Web UI 查詢
-5. 建立 Grafana，查詢 Pyroscope 資料
-
-### Beyla
+### Goals
 
 1. 建立 FastAPI App（fastapi）與其專用的 Beyla Instance（fastapi-beyla），Beyla Instance 會監控 FastAPI App 的 8000 port，並透過 eBPF 收集 Metrics 與 Traces 資料，Metrics 以 Prometheus 格式揭露，Traces 發送至 Tempo
 2. 建立 Spring Boot App（spring-boot）與其專用的 Beyla Instance（spring-boot-beyla），Beyla Instance 會監控 Spring Boot App 的 8080 port，並透過 eBPF 收集 Metrics 與 Traces 資料，Metrics 以 Prometheus 格式揭露，Traces 發送至 Tempo

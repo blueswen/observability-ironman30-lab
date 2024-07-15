@@ -1,6 +1,6 @@
 # Jaeger
 
-![Architecture](./img/21-lab-arch.png)
+![Architecture](./arch.png)
 
 在範例中使用了四個方式來發送 Trace Data：
 

@@ -1,8 +1,10 @@
 # Tempo
 
-## Quick Start
+## Basic
 
-### Basic
+![Architecture](./arch-basic.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -36,8 +38,19 @@
     ```bash
     docker-compose down
     ```
+### Goals
 
-### Fake Traces
+1. 建立 FastAPI App（app-a、app-b），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
+2. 建立 Spring Boot App（app-c），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
+3. 建立 Tempo，接收 Traces 資料
+4. 建立 Prometheus，接收 Tempo Remote Write 的 Metrics
+5. 建立 Grafana，查詢 Tempo 顯示 Traces 資料以及 Service 之間的關係圖
+
+## Fake Traces
+
+![Architecture](./arch-fake.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -57,17 +70,7 @@
     docker-compose -f docker-compose.fake.yaml down
     ```
 
-## Goals
-
-### Basic
-
-1. 建立 FastAPI App（app-a、app-b），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
-2. 建立 Spring Boot App（app-c），透過 OpenTelemetry Zero-code Instrumentation 產生與收集 Traces，並發送至 Tempo
-3. 建立 Tempo，接收 Traces 資料
-4. 建立 Prometheus，接收 Tempo Remote Write 的 Metrics
-5. 建立 Grafana，查詢 Tempo 顯示 Traces 資料以及 Service 之間的關係圖
-
-### Fake Traces
+### Goals
 
 1. 建立 Tempo，接收 Traces 資料
 2. 建立 Prometheus，接收 Tempo Remote Write 的 Metrics

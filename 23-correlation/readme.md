@@ -1,6 +1,6 @@
 # Correlation
 
-![Lab Architecture](./img/23-lab-arch.png)
+![Architecture](./arch.png)
 
 ## Quick Start
 

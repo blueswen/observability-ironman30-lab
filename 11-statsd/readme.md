@@ -1,8 +1,10 @@
 # StatsD
 
-## Quick Start
+## StatsD + Graphite
 
-### StatsD + Graphite
+![Architecture](./arch-graphite.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -35,7 +37,17 @@
     docker-compose down
     ```
 
-### StatsD Exporter + Prometheus
+### Goals
+
+1. 使用 All in One Image: graphiteapp/docker-graphite-statsd 將 StatsD 與 Graphite 一起啟動
+2. 使用 Graphite web UI 確認指標收集結果
+3. Flask API 透過標準的 StatsD Library [statsd](https://github.com/jsocol/pystatsd) 產生 Metrics
+
+## StatsD Exporter + Prometheus
+
+![Architecture](./arch-exporter.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -70,17 +82,10 @@
 
 ### Goals
 
-透過 StatsD 收集 Flask API 的 Metrics
-
-1. StatsD + Graphite: 使用 docker-compose.yml
-   1. 使用 All in One Image: graphiteapp/docker-graphite-statsd 將 StatsD 與 Graphite 一起啟動
-   2. 使用 Graphite web UI 確認指標收集結果
-   3. Flask API 透過標準的 StatsD Library [statsd](https://github.com/jsocol/pystatsd) 產生 Metrics
-2. StatsD Exporter + Prometheus: 使用 docker-compose.exporter.yml
-   1. 使用 StatsD Exporter 將 StatsD 資料轉換成 Prometheus Metrics
-   2. 使用 Prometheus 收集 Metrics
-   3. 使用 Grafana 查詢 Prometheus Metrics
-   4. Flask API 透過 DataDog 重新實作的 [DogStatsD](https://docs.datadoghq.com/developers/dogstatsd/) 的 Library [DataDog](https://github.com/DataDog/datadogpy) 產生 Metrics
+1. 使用 StatsD Exporter 將 StatsD 資料轉換成 Prometheus Metrics
+2. 使用 Prometheus 收集 Metrics
+3. 使用 Grafana 查詢 Prometheus Metrics
+4. Flask API 透過 DataDog 重新實作的 [DogStatsD](https://docs.datadoghq.com/developers/dogstatsd/) 的 Library [DataDog](https://github.com/DataDog/datadogpy) 產生 Metrics
 
 ## 參考資料
 

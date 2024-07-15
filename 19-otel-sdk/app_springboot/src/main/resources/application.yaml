@@ -1,5 +1,0 @@
-logging:
-  pattern:
-    level: "trace_id=%mdc{trace_id} span_id=%mdc{span_id} %p"
-  level:
-    com.example.app: DEBUG

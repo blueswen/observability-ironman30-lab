@@ -1,8 +1,10 @@
 # Cortex
 
-## Quick Start
+## Single Cortex Instance
 
-### Single Cortex Instance
+![Architecture](./arch-single.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -20,7 +22,11 @@
     docker-compose down
     ```
 
-### Multi Cortex Instances
+## Multi Cortex Instances
+
+![Architecture](./arch-multi.png)
+
+### Quick Start
 
 1. 啟動所有服務
 

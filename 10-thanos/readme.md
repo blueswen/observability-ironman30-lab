@@ -1,8 +1,10 @@
 # Thanos
 
-## Quick Start
+## Sidecar
 
-### Sidecar
+![Architecture](./arch-sidecar.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -21,7 +23,11 @@
     docker-compose down
     ```
 
-### Receive
+## Receive
+
+![Architecture](./arch-receive.png)
+
+### Quick Start
 
 1. 啟動所有服務
 

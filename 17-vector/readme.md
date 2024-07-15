@@ -1,8 +1,10 @@
 # Vector
 
-## Quick Start
+## Basic
 
-### Basic
+![Architecture](./arch-basic.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -27,7 +29,18 @@
     docker-compose down
     ```
 
-### Container Log with Loki
+### Goals
+
+1. 建立 Vector
+   1. 使用 [Demo Logs](https://vector.dev/docs/reference/configuration/sources/demo_logs/) 作為 source，生成假的 JSON 格式 Log
+   2. 使用 [Filter](https://vector.dev/docs/reference/configuration/transforms/filter/) 作為 transform，只保留 `method` 為 `GET` 的資料
+   3. 使用 [Console](https://vector.dev/docs/reference/configuration/sinks/console/) 作為 sink，將資料輸出至 Console
+
+## Container Log with Loki
+
+![Architecture](./arch-loki.png)
+
+### Quick Start
 
 1. 啟動所有服務
 
@@ -52,16 +65,7 @@
     docker-compose down
     ```
 
-## Goals
-
-### Basic
-
-1. 建立 Vector
-   1. 使用 [Demo Logs](https://vector.dev/docs/reference/configuration/sources/demo_logs/) 作為 source，生成假的 JSON 格式 Log
-   2. 使用 [Filter](https://vector.dev/docs/reference/configuration/transforms/filter/) 作為 transform，只保留 `method` 為 `GET` 的資料
-   3. 使用 [Console](https://vector.dev/docs/reference/configuration/sinks/console/) 作為 sink，將資料輸出至 Console
-
-### Container Log with Loki
+### Goals
 
 1. 建立 Vector
    1. 使用 [Docker Logs](https://vector.dev/docs/reference/configuration/sources/docker_logs/) 作為 source，收集 Docker Container 的 Log，只篩選含有 `logger=vector` Label 的 Container
