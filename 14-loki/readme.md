@@ -7,7 +7,7 @@
 1. 安裝 [Loki Docker Driver](https://grafana.com/docs/loki/latest/clients/docker-driver/)
 
     ```bash
-    docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+    docker plugin install grafana/loki-docker-driver:2.9.2 --alias loki --grant-all-permissions
     ```
 
 2. 啟動所有服務
