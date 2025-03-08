@@ -1,5 +1,10 @@
 # Promtail
 
+Promtail 目前已併入 [Grafana Alloy](https://github.com/grafana/alloy)，Reference: [Grafana Loki 3.4: Standardized storage config, sizing guidance, and Promtail merging into Alloy](https://grafana.com/blog/2025/02/13/grafana-loki-3.4-standardized-storage-config-sizing-guidance-and-promtail-merging-into-alloy/#promtail-merged-into-alloy)
+
+1. 2025-02-13 進入 Long-Term Support (LTS)，只提供安全性更新與重大錯誤修復
+2. 2026-03-02 End-of-Life (EOL)，不再提供任何更新
+
 ![Architecture](./arch.png)
 
 ## Quick Start
